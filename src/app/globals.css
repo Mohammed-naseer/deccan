@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #0B0F12;
+    --foreground: #F8FAFC;
+    --card: #12181F;
+    --card-foreground: #F8FAFC;
+    --cyan: #00C2CB;
+    --cyan-glow: rgba(0, 194, 203, 0.25);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: #0B0F12;
+    color: #F8FAFC;
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: #00C2CB;
+    color: #0B0F12;
+  }
+}
+
+/* Custom wire pattern subtle backdrop */
+.bg-wire-pattern {
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px
+  );
+  background-size: 32px 100%;
+}
+
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Glassmorphism card */
+.glass-panel {
+  background: rgba(18, 24, 31, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-cyan {
+  background: rgba(18, 24, 31, 0.85);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 194, 203, 0.25);
+  box-shadow: 0 8px 32px -4px rgba(0, 194, 203, 0.1);
+}
+
+/* Technical hairline */
+.tech-border {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Custom subtle scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0F12;
+}
+::-webkit-scrollbar-thumb {
+  background: #1E293B;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00C2CB;
+}
