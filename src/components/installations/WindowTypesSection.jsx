@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { windowInstallationTypes } from "@/data/productData";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function WindowTypesSection() {
-  const [activeType, setActiveType] = useState<string>("fixed");
+  const [activeType, setActiveType] = useState("fixed");
 
   const current =
     windowInstallationTypes.find((t) => t.id === activeType) ||
@@ -31,23 +31,23 @@ export default function WindowTypesSection() {
         </div>
 
         {/* 4 Interactive Type Buttons */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-6 sm:mb-8">
           {windowInstallationTypes.map((type) => (
             <button
               key={type.id}
               onClick={() => setActiveType(type.id)}
-              className={`p-5 rounded-2xl text-left transition-all relative overflow-hidden border ${
+              className={`p-3.5 sm:p-5 rounded-2xl text-left transition-all relative overflow-hidden border ${
                 activeType === type.id
                   ? "bg-deccan-card border-deccan-cyan shadow-xl shadow-deccan-cyan/10"
                   : "bg-deccan-dark/80 border-white/10 hover:border-white/20 text-slate-400"
               }`}
             >
-              <span className={`text-[11px] font-mono uppercase tracking-wider block mb-1 ${
+              <span className={`text-[10px] sm:text-[11px] font-mono uppercase tracking-wider block mb-0.5 sm:mb-1 ${
                 activeType === type.id ? "text-deccan-cyan" : "text-slate-400"
               }`}>
                 Type {windowInstallationTypes.indexOf(type) + 1}
               </span>
-              <h3 className={`font-display font-bold text-base sm:text-lg ${
+              <h3 className={`font-display font-bold text-sm sm:text-lg ${
                 activeType === type.id ? "text-white" : "text-slate-300"
               }`}>
                 {type.name}
@@ -64,7 +64,7 @@ export default function WindowTypesSection() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-deccan-dark border border-white/15 rounded-3xl p-6 sm:p-10 shadow-2xl"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center bg-deccan-dark border border-white/15 rounded-3xl p-5 sm:p-10 shadow-2xl"
           >
             {/* Left: Window Installation Photo */}
             <div className="lg:col-span-6 relative rounded-2xl overflow-hidden border border-white/10 bg-deccan-card aspect-[4/3] w-full">

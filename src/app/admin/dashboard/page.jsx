@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getAdminDashboard } from "@/services/api";
-import { AdminDashboardData, SiteVisitEnquiry } from "@/types";
 import { 
   Users, 
   Calendar, 
@@ -21,7 +20,7 @@ import {
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
-  const [data, setData] = useState<AdminDashboardData | null>(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");

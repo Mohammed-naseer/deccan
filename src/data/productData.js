@@ -1,16 +1,4 @@
-export interface WireOption {
-  thickness: string;
-  material: string;
-  description: string;
-}
-
-export interface TechnicalSpecification {
-  category: string;
-  value: string;
-  details: string[];
-}
-
-export const wireOptions: WireOption[] = [
+export const wireOptions = [
   {
     thickness: "2.5 mm",
     material: "SS 316 & 304 Stainless Steel",
@@ -23,7 +11,7 @@ export const wireOptions: WireOption[] = [
   },
 ];
 
-export const technicalSpecs: TechnicalSpecification[] = [
+export const technicalSpecs = [
   {
     category: "Wire Thickness Options",
     value: "2.5 mm / 3.0 mm",
@@ -80,15 +68,7 @@ export const technicalSpecs: TechnicalSpecification[] = [
   },
 ];
 
-export interface EngineeringDiagram {
-  id: string;
-  title: string;
-  dimension: string;
-  image: string;
-  bullets: string[];
-}
-
-export const engineeringDiagrams: EngineeringDiagram[] = [
+export const engineeringDiagrams = [
   {
     id: "channel",
     title: "Aluminium Channel",
@@ -127,14 +107,7 @@ export const engineeringDiagrams: EngineeringDiagram[] = [
   },
 ];
 
-export interface FeatureCard {
-  title: string;
-  tagline: string;
-  description: string;
-  icon: string;
-}
-
-export const whyFeatures: FeatureCard[] = [
+export const whyFeatures = [
   {
     title: "Unblocked View",
     tagline: "Total Horizon Clarity",
@@ -173,16 +146,7 @@ export const whyFeatures: FeatureCard[] = [
   },
 ];
 
-export interface WindowInstallationType {
-  id: string;
-  name: string;
-  headline: string;
-  description: string;
-  image: string;
-  configuration: string;
-}
-
-export const windowInstallationTypes: WindowInstallationType[] = [
+export const windowInstallationTypes = [
   {
     id: "fixed",
     name: "Fixed Window",
@@ -217,15 +181,7 @@ export const windowInstallationTypes: WindowInstallationType[] = [
   },
 ];
 
-export interface ComparisonRow {
-  feature: string;
-  invisibleGrille: boolean;
-  traditionalGrille: boolean;
-  invisibleNote: string;
-  traditionalNote: string;
-}
-
-export const comparisonData: ComparisonRow[] = [
+export const comparisonData = [
   {
     feature: "Unblocked View",
     invisibleGrille: true,
@@ -270,15 +226,7 @@ export const comparisonData: ComparisonRow[] = [
   },
 ];
 
-export interface GalleryItem {
-  id: string;
-  title: string;
-  category: "Balconies" | "Windows" | "Installation" | "Details";
-  image: string;
-  caption: string;
-}
-
-export const galleryItems: GalleryItem[] = [
+export const galleryItems = [
   {
     id: "gal-1",
     title: "Balcony Invisible Grill Installation",

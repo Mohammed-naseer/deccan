@@ -1,21 +1,4 @@
-export interface SiteConfig {
-  name: string;
-  tagline: string;
-  brandStatement: {
-    line1: string;
-    line2: string;
-  };
-  phones: string[];
-  displayPhone: string;
-  email: string;
-  instagram: string;
-  instagramUrl: string;
-  serviceArea: string;
-  whatsappNumber: string;
-  whatsappMessage: string;
-}
-
-export const siteConfig: SiteConfig = {
+export const siteConfig = {
   name: "Deccan Space Works",
   tagline: "Safety Without Blocking Your View.",
   brandStatement: {
@@ -32,12 +15,7 @@ export const siteConfig: SiteConfig = {
   whatsappMessage: "Hello Deccan Space Works, I would like to request a free site visit for Invisible Grills.",
 };
 
-export interface NavItem {
-  label: string;
-  href: string;
-}
-
-export const navItems: NavItem[] = [
+export const navItems = [
   { label: "Home", href: "#hero" },
   { label: "Why Us", href: "#why-us" },
   { label: "Product", href: "#product" },
@@ -45,6 +23,8 @@ export const navItems: NavItem[] = [
   { label: "Engineering", href: "#engineering" },
   { label: "Window Types", href: "#window-types" },
   { label: "Comparison", href: "#comparison" },
+  { label: "Explore", href: "#explore" },
   { label: "Gallery", href: "#gallery" },
+  { label: "Reviews", href: "#reviews" },
   { label: "Contact", href: "#contact" },
 ];

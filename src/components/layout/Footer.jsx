@@ -10,7 +10,7 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Main Footer Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-12 border-b border-white/10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-8 sm:gap-12 pb-12 border-b border-white/10">
           
           {/* Col 1: Brand & Logo */}
           <div className="lg:col-span-4 space-y-5">
@@ -168,9 +168,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom Copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-3 text-center sm:text-left">
           <p>© 2026 Deccan Space Works. All rights reserved. Hyderabad, Telangana.</p>
-          <p className="font-mono text-[11px]">
+          <p className="font-mono text-[10px] sm:text-[11px]">
             &ldquo;WHAT&apos;S VISIBLE ARE SEAMLESS. WHAT&apos;S INVISIBLE IS STRENGTH.&rdquo;
           </p>
         </div>

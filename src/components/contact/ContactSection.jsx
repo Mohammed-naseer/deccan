@@ -26,7 +26,7 @@ export default function ContactSection() {
         </div>
 
         {/* 4 Contact Channels Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-10 sm:mb-12">
           
           {/* Call Us */}
           <div className="p-8 rounded-2xl bg-deccan-card/70 border border-white/10 hover:border-deccan-cyan/40 transition-all space-y-4">
@@ -150,19 +150,19 @@ export default function ContactSection() {
         </div>
 
         {/* Primary Service Area Banner */}
-        <div className="p-8 rounded-3xl bg-deccan-card border border-white/15 flex flex-col md:flex-row items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-deccan-cyan/10 border border-deccan-cyan/30 flex items-center justify-center text-deccan-cyan flex-shrink-0">
-              <MapPin className="w-6 h-6" />
+        <div className="p-6 sm:p-8 rounded-3xl bg-deccan-card border border-white/15 flex flex-col md:flex-row items-start md:items-center justify-between gap-5">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-deccan-cyan/10 border border-deccan-cyan/30 flex items-center justify-center text-deccan-cyan flex-shrink-0 mt-0.5 sm:mt-0">
+              <MapPin className="w-5 h-5 sm:w-6 sm:h-6" />
             </div>
             <div>
               <span className="text-xs font-mono uppercase tracking-widest text-deccan-cyan block">
                 Primary Service Area
               </span>
-              <h3 className="font-display text-2xl font-extrabold text-white">
-                HYDERABAD & Surrounding Telangana Regions
+              <h3 className="font-display text-xl sm:text-2xl font-extrabold text-white">
+                HYDERABAD &amp; Surrounding Telangana Regions
               </h3>
-              <p className="text-xs text-slate-400 font-light mt-1">
+              <p className="text-xs text-slate-400 font-light mt-1 leading-relaxed">
                 Gachibowli · Jubilee Hills · Banjara Hills · Hitec City · Kondapur · Kokapet · Madhapur · Manikonda · Tellapur
               </p>
             </div>
@@ -170,7 +170,7 @@ export default function ContactSection() {
 
           <a
             href="#enquiry"
-            className="px-6 py-3.5 rounded-xl bg-deccan-cyan text-deccan-dark font-display font-bold text-sm hover:bg-cyan-300 transition-all flex-shrink-0"
+            className="w-full md:w-auto text-center px-6 py-3.5 rounded-xl bg-deccan-cyan text-deccan-dark font-display font-bold text-sm hover:bg-cyan-300 transition-all flex-shrink-0"
           >
             Request Site Visit in Hyderabad
           </a>

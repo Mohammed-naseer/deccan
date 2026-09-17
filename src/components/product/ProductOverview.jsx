@@ -10,7 +10,7 @@ export default function ProductOverview() {
     <section id="product" className="py-24 bg-deccan-card/50 border-t border-white/10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
           
           {/* Left Column: Product Image */}
           <div className="lg:col-span-6 relative">

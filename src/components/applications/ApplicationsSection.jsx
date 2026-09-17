@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Building2, Home, Landmark } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const applications = [
@@ -42,7 +42,7 @@ export default function ApplicationsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 sm:mb-16 gap-5 sm:gap-6">
           <div className="max-w-2xl">
             <span className="text-xs font-mono uppercase tracking-widest text-deccan-cyan block mb-2">
               Visual Applications
@@ -57,7 +57,7 @@ export default function ApplicationsSection() {
 
           <Link
             href="#enquiry"
-            className="inline-flex items-center gap-2 text-sm font-semibold bg-deccan-cyan text-deccan-dark px-6 py-3 rounded-full hover:bg-cyan-300 transition-all shadow-lg"
+            className="inline-flex items-center justify-center gap-2 text-sm font-semibold bg-deccan-cyan text-deccan-dark px-6 py-3 rounded-full hover:bg-cyan-300 transition-all shadow-lg flex-shrink-0 w-full md:w-auto"
           >
             <span>Book Site Measurement</span>
             <ArrowUpRight className="w-4 h-4" />

@@ -1,4 +1,3 @@
-import { SiteVisitEnquiry, CustomerPortalData, AdminDashboardData } from "@/types";
 import { technicalSpecs, windowInstallationTypes, galleryItems } from "@/data/productData";
 import { mockCustomerData, mockAdminData } from "@/data/mockPortalData";
 
@@ -7,7 +6,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 /**
  * Service layer abstraction for Deccan Space Works
  * When NEXT_PUBLIC_API_BASE_URL is defined, can call real backend APIs.
- * Defaults gracefully to typed mock data and simulated async latency.
+ * Defaults gracefully to mock data and simulated async latency.
  */
 
 export async function getProduct() {
@@ -37,7 +36,7 @@ export async function getGallery() {
   return galleryItems;
 }
 
-export async function createEnquiry(enquiry: SiteVisitEnquiry): Promise<{ success: boolean; id: string; message: string }> {
+export async function createEnquiry(enquiry) {
   if (API_BASE_URL) {
     const res = await fetch(`${API_BASE_URL}/api/enquiries`, {
       method: "POST",
@@ -57,7 +56,7 @@ export async function createEnquiry(enquiry: SiteVisitEnquiry): Promise<{ succes
   };
 }
 
-export async function getCustomerEnquiry(id?: string): Promise<CustomerPortalData> {
+export async function getCustomerEnquiry(id) {
   if (API_BASE_URL && id) {
     const res = await fetch(`${API_BASE_URL}/api/customer/${id}`);
     return res.json();
@@ -66,12 +65,12 @@ export async function getCustomerEnquiry(id?: string): Promise<CustomerPortalDat
   return mockCustomerData;
 }
 
-export async function getCustomerQuotation(id?: string) {
+export async function getCustomerQuotation(id) {
   const data = await getCustomerEnquiry(id);
   return data.quotation;
 }
 
-export async function getCustomerStatus(id?: string) {
+export async function getCustomerStatus(id) {
   const data = await getCustomerEnquiry(id);
   return {
     currentStep: data.currentStep,
@@ -80,7 +79,7 @@ export async function getCustomerStatus(id?: string) {
   };
 }
 
-export async function getAdminDashboard(): Promise<AdminDashboardData> {
+export async function getAdminDashboard() {
   if (API_BASE_URL) {
     const res = await fetch(`${API_BASE_URL}/api/admin/dashboard`);
     return res.json();

@@ -3,11 +3,11 @@
 import { useState } from "react";
 import Image from "next/image";
 import { engineeringDiagrams } from "@/data/productData";
-import { Maximize2, Shield, Wrench, Layers } from "lucide-react";
+import { Wrench } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function TechnicalDiagrams() {
-  const [selectedDiagram, setSelectedDiagram] = useState<string>("channel");
+  const [selectedDiagram, setSelectedDiagram] = useState("channel");
 
   const active = engineeringDiagrams.find((d) => d.id === selectedDiagram) || engineeringDiagrams[0];
 
@@ -29,19 +29,20 @@ export default function TechnicalDiagrams() {
         </div>
 
         {/* Tab Navigation for the 3 Diagrams */}
-        <div className="flex flex-wrap gap-3 mb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-3 mb-8">
           {engineeringDiagrams.map((d) => (
             <button
               key={d.id}
               onClick={() => setSelectedDiagram(d.id)}
-              className={`px-5 py-3 rounded-xl font-mono text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${
+              className={`px-3 sm:px-5 py-2.5 sm:py-3 rounded-xl font-mono text-[10px] sm:text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 ${
                 selectedDiagram === d.id
                   ? "bg-deccan-cyan text-deccan-dark font-bold shadow-lg shadow-deccan-cyan/20"
                   : "bg-deccan-dark/80 text-slate-300 border border-white/10 hover:border-deccan-cyan/40"
               }`}
             >
-              <span className="w-2 h-2 rounded-full bg-current" />
-              <span>{d.title} ({d.dimension})</span>
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-current" />
+              <span className="hidden sm:inline">{d.title} ({d.dimension})</span>
+              <span className="sm:hidden">{d.title}</span>
             </button>
           ))}
         </div>
@@ -54,7 +55,7 @@ export default function TechnicalDiagrams() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -15 }}
             transition={{ duration: 0.4 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-deccan-dark border border-white/15 rounded-3xl p-6 sm:p-10 shadow-2xl"
+            className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center bg-deccan-dark border border-white/15 rounded-3xl p-5 sm:p-10 shadow-2xl"
           >
             {/* Left: Diagram Blueprint Image */}
             <div className="lg:col-span-6 flex items-center justify-center p-6 bg-black/40 rounded-2xl border border-white/10 relative group">

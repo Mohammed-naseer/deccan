@@ -2,12 +2,11 @@
 
 import { useState } from "react";
 import { siteConfig } from "@/config/site";
-import { PropertyType, WindowTypeOption, SiteVisitEnquiry } from "@/types";
 import { createEnquiry } from "@/services/api";
-import { Send, MessageSquare, CheckCircle2, AlertCircle, Upload, Calendar, Clock, MapPin, Building, ShieldCheck } from "lucide-react";
+import { Send, MessageSquare, CheckCircle2, AlertCircle, Upload, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 
-const propertyTypes: PropertyType[] = [
+const propertyTypes = [
   "Apartment",
   "Villa",
   "Independent House",
@@ -15,7 +14,7 @@ const propertyTypes: PropertyType[] = [
   "Other",
 ];
 
-const windowTypes: WindowTypeOption[] = [
+const windowTypes = [
   "Fixed Window",
   "Sliding Window",
   "Bi-Fold Window",
@@ -25,7 +24,7 @@ const windowTypes: WindowTypeOption[] = [
 ];
 
 export default function EnquiryForm() {
-  const [formData, setFormData] = useState<SiteVisitEnquiry>({
+  const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
     whatsappNumber: "",
@@ -41,10 +40,10 @@ export default function EnquiryForm() {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [assignedId, setAssignedId] = useState<string>("");
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [assignedId, setAssignedId] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
 
@@ -73,7 +72,7 @@ export default function EnquiryForm() {
     <section id="enquiry" className="py-24 bg-deccan-card/60 border-t border-white/10 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
           
           {/* Left Column: Context & WhatsApp Quick Action */}
           <div className="lg:col-span-5 space-y-8">
@@ -158,7 +157,7 @@ export default function EnquiryForm() {
 
           {/* Right Column: Interactive Form */}
           <div className="lg:col-span-7">
-            <div className="p-8 sm:p-10 rounded-3xl bg-deccan-dark border border-white/15 shadow-2xl relative">
+            <div className="p-5 sm:p-8 md:p-10 rounded-3xl bg-deccan-dark border border-white/15 shadow-2xl relative">
               
               {isSuccess ? (
                 <motion.div
@@ -297,7 +296,7 @@ export default function EnquiryForm() {
                       </label>
                       <select
                         value={formData.propertyType}
-                        onChange={(e) => setFormData({ ...formData, propertyType: e.target.value as PropertyType })}
+                        onChange={(e) => setFormData({ ...formData, propertyType: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-deccan-card border border-white/10 text-white focus:outline-none focus:border-deccan-cyan transition-colors text-sm"
                       >
                         {propertyTypes.map((pt) => (
@@ -317,7 +316,7 @@ export default function EnquiryForm() {
                       </label>
                       <select
                         value={formData.windowType}
-                        onChange={(e) => setFormData({ ...formData, windowType: e.target.value as WindowTypeOption })}
+                        onChange={(e) => setFormData({ ...formData, windowType: e.target.value })}
                         className="w-full px-4 py-3 rounded-xl bg-deccan-card border border-white/10 text-white focus:outline-none focus:border-deccan-cyan transition-colors text-sm"
                       >
                         {windowTypes.map((wt) => (

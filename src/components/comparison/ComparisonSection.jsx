@@ -2,7 +2,6 @@
 
 import { comparisonData } from "@/data/productData";
 import { Check, X, ShieldAlert, Sparkles } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function ComparisonSection() {
   return (
@@ -48,7 +47,7 @@ export default function ComparisonSection() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
-              {comparisonData.map((row, idx) => (
+              {comparisonData.map((row) => (
                 <tr
                   key={row.feature}
                   className="hover:bg-white/[0.02] transition-colors"

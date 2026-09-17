@@ -1,7 +1,6 @@
 "use client";
 
 import { technicalSpecs, wireOptions } from "@/data/productData";
-import { ShieldCheck, Anchor, Wrench, Eye, ShieldAlert, Cpu } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function TechnicalSpecifications() {

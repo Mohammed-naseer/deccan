@@ -1,6 +1,4 @@
-import { CustomerPortalData, AdminDashboardData, SiteVisitEnquiry } from "@/types";
-
-export const mockCustomerData: CustomerPortalData = {
+export const mockCustomerData = {
   enquiryId: "DSW-HYD-2026-0842",
   customerName: "Srikanth Rao",
   propertyType: "Apartment (18th Floor)",
@@ -94,7 +92,7 @@ export const mockCustomerData: CustomerPortalData = {
   ],
 };
 
-export const mockAdminData: AdminDashboardData = {
+export const mockAdminData = {
   metrics: {
     totalEnquiries: 48,
     siteVisitsScheduled: 14,

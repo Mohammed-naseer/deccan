@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 
@@ -14,7 +13,8 @@ const outfit = Outfit({
   display: "swap",
 });
 
-export const metadata: Metadata = {
+export const metadata = {
+  metadataBase: new URL("https://deccanspaceworks.com"),
   title: "Deccan Space Works | Invisible Grills in Hyderabad",
   description:
     "Deccan Space Works provides invisible grill solutions for balconies and windows in Hyderabad, with stainless steel wire options, aluminium track systems and professional installation.",
@@ -55,11 +55,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth dark">
       <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-deccan-dark text-deccan-paper min-h-screen selection:bg-deccan-cyan selection:text-deccan-dark`}>

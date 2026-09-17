@@ -9,7 +9,9 @@ import SafetyPerformance from "@/components/safety/SafetyPerformance";
 import WindowTypesSection from "@/components/installations/WindowTypesSection";
 import ComparisonSection from "@/components/comparison/ComparisonSection";
 import ApplicationsSection from "@/components/applications/ApplicationsSection";
+import ExploreSection from "@/components/explore/ExploreSection";
 import VisualGallery from "@/components/gallery/VisualGallery";
+import ReviewsSection from "@/components/reviews/ReviewsSection";
 import EnquiryForm from "@/components/forms/EnquiryForm";
 import ContactSection from "@/components/contact/ContactSection";
 import Footer from "@/components/layout/Footer";
@@ -52,10 +54,16 @@ export default function Home() {
         {/* 11. Visual Applications */}
         <ApplicationsSection />
 
-        {/* 12. Visual Gallery with Lightbox */}
+        {/* 12. Explore - Video Showcase */}
+        <ExploreSection />
+
+        {/* 13. Visual Gallery with Lightbox */}
         <VisualGallery />
 
-        {/* 13. Product Enquiry & Site Visit Form */}
+        {/* 14. Customer Reviews & Feedback */}
+        <ReviewsSection />
+
+        {/* 15. Product Enquiry & Site Visit Form */}
         <EnquiryForm />
 
         {/* 14. Contact Section */}

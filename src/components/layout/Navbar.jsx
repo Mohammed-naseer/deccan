@@ -39,22 +39,22 @@ export default function Navbar() {
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-display font-bold tracking-wider text-base sm:text-lg text-white group-hover:text-deccan-cyan transition-colors">
+            <span className="font-display font-bold tracking-wider text-sm sm:text-base lg:text-lg text-white group-hover:text-deccan-cyan transition-colors leading-tight">
               DECCAN SPACE WORKS
             </span>
-            <span className="text-[10px] tracking-widest text-deccan-cyan font-mono uppercase">
+            <span className="text-[9px] sm:text-[10px] tracking-widest text-deccan-cyan font-mono uppercase">
               Invisible Grills
             </span>
           </div>
         </Link>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-7">
+        {/* Desktop Navigation - xl+ shows all, lg shows subset via overflow ellipsis */}
+        <nav className="hidden xl:flex items-center gap-5">
           {navItems.map((item) => (
             <Link
               key={item.label}
               href={item.href}
-              className="text-sm font-medium text-slate-300 hover:text-deccan-cyan transition-colors tracking-wide"
+              className="text-xs font-medium text-slate-300 hover:text-deccan-cyan transition-colors tracking-wide whitespace-nowrap"
             >
               {item.label}
             </Link>
@@ -62,25 +62,25 @@ export default function Navbar() {
         </nav>
 
         {/* Right Desktop CTA */}
-        <div className="hidden lg:flex items-center gap-4">
+        <div className="hidden xl:flex items-center gap-3">
           <Link
             href={`tel:${siteConfig.phones[0]}`}
-            className="flex items-center gap-2 text-xs font-mono text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-white/10 hover:border-deccan-cyan/40 transition-all"
+            className="flex items-center gap-1.5 text-xs font-mono text-slate-300 hover:text-white px-3 py-2 rounded-lg border border-white/10 hover:border-deccan-cyan/40 transition-all whitespace-nowrap"
           >
-            <Phone className="w-3.5 h-3.5 text-deccan-cyan" />
-            <span>{siteConfig.displayPhone}</span>
+            <Phone className="w-3.5 h-3.5 text-deccan-cyan flex-shrink-0" />
+            <span className="whitespace-nowrap">{siteConfig.displayPhone}</span>
           </Link>
           <Link
             href="#enquiry"
-            className="flex items-center gap-2 text-sm font-semibold bg-deccan-cyan text-deccan-dark px-5 py-2.5 rounded-full hover:bg-cyan-300 transition-all shadow-lg shadow-deccan-cyan/20 hover:scale-[1.02] active:scale-[0.98]"
+            className="flex items-center gap-2 text-sm font-semibold bg-deccan-cyan text-deccan-dark px-4 py-2.5 rounded-full hover:bg-cyan-300 transition-all shadow-lg shadow-deccan-cyan/20 hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
           >
-            <span>Get a Free Site Visit</span>
-            <ArrowUpRight className="w-4 h-4" />
+            <span className="whitespace-nowrap">Free Site Visit</span>
+            <ArrowUpRight className="w-4 h-4 flex-shrink-0" />
           </Link>
         </div>
 
-        {/* Mobile Buttons */}
-        <div className="flex items-center gap-2 lg:hidden">
+        {/* Mobile Buttons - shown below xl */}
+        <div className="flex items-center gap-2 xl:hidden">
           <Link
             href={`https://wa.me/${siteConfig.whatsappNumber}?text=${encodeURIComponent(
               siteConfig.whatsappMessage
@@ -112,7 +112,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-deccan-dark/98 backdrop-blur-xl border-b border-white/10 px-6 py-6 space-y-4">
+        <div className="xl:hidden bg-deccan-dark/98 backdrop-blur-xl border-b border-white/10 px-5 sm:px-6 py-5 sm:py-6 space-y-4">
           <div className="flex flex-col space-y-3">
             {navItems.map((item) => (
               <Link

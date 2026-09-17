@@ -2,15 +2,15 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { galleryItems, GalleryItem } from "@/data/productData";
+import { galleryItems } from "@/data/productData";
 import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const categories = ["All", "Balconies", "Windows", "Installation", "Details"] as const;
+const categories = ["All", "Balconies", "Windows", "Installation", "Details"];
 
 export default function VisualGallery() {
-  const [selectedCategory, setSelectedCategory] = useState<string>("All");
-  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [lightboxIndex, setLightboxIndex] = useState(null);
 
   const filteredItems =
     selectedCategory === "All"
@@ -19,7 +19,7 @@ export default function VisualGallery() {
 
   // Keyboard navigation for lightbox
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleKeyDown = (e) => {
       if (lightboxIndex === null) return;
       if (e.key === "Escape") setLightboxIndex(null);
       if (e.key === "ArrowRight") {
@@ -39,7 +39,7 @@ export default function VisualGallery() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [lightboxIndex, filteredItems.length]);
 
-  const activeLightboxItem: GalleryItem | null =
+  const activeLightboxItem =
     lightboxIndex !== null ? filteredItems[lightboxIndex] : null;
 
   return (

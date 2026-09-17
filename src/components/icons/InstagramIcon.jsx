@@ -1,6 +1,6 @@
 import React from "react";
 
-export function InstagramIcon({ className = "w-5 h-5" }: { className?: string }) {
+export function InstagramIcon({ className = "w-5 h-5" }) {
   return (
     <svg
       className={className}

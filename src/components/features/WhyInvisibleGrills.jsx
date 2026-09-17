@@ -4,7 +4,7 @@ import { whyFeatures } from "@/data/productData";
 import { Eye, ShieldCheck, Sparkles, LifeBuoy, Clock, Layers } from "lucide-react";
 import { motion } from "framer-motion";
 
-const iconMap: Record<string, any> = {
+const iconMap = {
   Eye,
   ShieldCheck,
   Sparkles,

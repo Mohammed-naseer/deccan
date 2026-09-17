@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ShieldCheck, Heart, Wind, LifeBuoy, Check } from "lucide-react";
+import { ShieldCheck, Heart, LifeBuoy } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function SafetyPerformance() {

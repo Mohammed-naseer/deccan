@@ -4,11 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { getCustomerEnquiry } from "@/services/api";
-import { CustomerPortalData } from "@/types";
 import { CheckCircle2, Clock, Calendar, User, Phone, MapPin, FileText, ArrowLeft, Shield } from "lucide-react";
 
 export default function CustomerDashboardPage() {
-  const [data, setData] = useState<CustomerPortalData | null>(null);
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
