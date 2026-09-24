@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { Star, Quote, ChevronLeft, ChevronRight, PenLine } from "lucide-react";
 import { InstagramIcon } from "@/components/icons/InstagramIcon";
 import { siteConfig } from "@/config/site";
+import WriteReviewModal from "@/components/reviews/WriteReviewModal";
 
 const reviews = [
   {
@@ -81,8 +82,10 @@ const reviews = [
   },
 ];
 
+import { getPublicReviews } from "@/services/api";
+
 const stats = [
-  { value: "200+", label: "Installations in Hyderabad" },
+  { value: "8,000+", label: "Installations in Hyderabad" },
   { value: "5.0", label: "Average Rating" },
   { value: "100%", label: "On-Time Completion" },
   { value: "3 Yrs", label: "Warranty on All Work" },
@@ -90,11 +93,33 @@ const stats = [
 
 export default function ReviewsSection() {
   const [active, setActive] = useState(0);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewList, setReviewList] = useState(reviews);
 
-  const prev = () => setActive((p) => (p === 0 ? reviews.length - 1 : p - 1));
-  const next = () => setActive((p) => (p === reviews.length - 1 ? 0 : p + 1));
+  useEffect(() => {
+    getPublicReviews().then((liveReviews) => {
+      if (liveReviews && liveReviews.length > 0) {
+        const formatted = liveReviews.map((r, i) => ({
+          id: r._id || i,
+          name: r.name,
+          location: `${r.city || "Hyderabad"}, Hyderabad`,
+          property: "Verified Customer",
+          rating: r.rating || 5,
+          date: new Date(r.createdAt || Date.now()).toLocaleDateString("en-IN", { month: "long", year: "numeric" }),
+          text: r.review,
+          highlight: "Verified Installation",
+          avatar: r.name?.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2) || "DS",
+          color: "from-cyan-500 to-blue-600"
+        }));
+        setReviewList(formatted);
+      }
+    });
+  }, []);
 
-  const review = reviews[active];
+  const prev = () => setActive((p) => (p === 0 ? reviewList.length - 1 : p - 1));
+  const next = () => setActive((p) => (p === reviewList.length - 1 ? 0 : p + 1));
+
+  const review = reviewList[active] || reviewList[0];
 
   return (
     <section id="reviews" className="py-20 sm:py-24 bg-deccan-dark border-t border-white/10 relative overflow-hidden">
@@ -337,13 +362,23 @@ export default function ReviewsSection() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+            {/* Write a Review button */}
+            <button
+              type="button"
+              onClick={() => setReviewModalOpen(true)}
+              aria-label="Write a customer review"
+              className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-deccan-cyan text-deccan-dark font-semibold text-sm hover:bg-cyan-300 transition-all shadow-lg shadow-deccan-cyan/20 whitespace-nowrap"
+            >
+              <Star className="w-4 h-4 fill-deccan-dark" aria-hidden="true" />
+              <span>Write a Review</span>
+            </button>
             <a
               href={siteConfig.instagramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 text-white font-semibold text-sm hover:opacity-90 transition-all whitespace-nowrap"
             >
-              <InstagramIcon className="w-4 h-4" />
+              <InstagramIcon className="w-4 h-4" aria-hidden="true" />
               <span>Tag on Instagram</span>
             </a>
             <a
@@ -352,13 +387,19 @@ export default function ReviewsSection() {
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-deccan-card border border-white/15 text-slate-200 hover:text-white hover:border-deccan-cyan/40 font-semibold text-sm transition-all whitespace-nowrap"
             >
-              <Quote className="w-4 h-4 text-deccan-cyan" />
+              <Quote className="w-4 h-4 text-deccan-cyan" aria-hidden="true" />
               <span>Send Feedback</span>
             </a>
           </div>
         </motion.div>
 
       </div>
+
+      {/* Write a Review Modal */}
+      <WriteReviewModal
+        isOpen={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+      />
     </section>
   );
 }

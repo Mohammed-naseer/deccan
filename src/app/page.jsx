@@ -1,5 +1,7 @@
 import Navbar from "@/components/layout/Navbar";
 import HeroSection from "@/components/hero/HeroSection";
+import HomeServicesSection from "@/components/services/HomeServicesSection";
+import TrustSection from "@/components/trust/TrustSection";
 import BrandStatement from "@/components/brand/BrandStatement";
 import WhyInvisibleGrills from "@/components/features/WhyInvisibleGrills";
 import ProductOverview from "@/components/product/ProductOverview";
@@ -12,7 +14,9 @@ import ApplicationsSection from "@/components/applications/ApplicationsSection";
 import ExploreSection from "@/components/explore/ExploreSection";
 import VisualGallery from "@/components/gallery/VisualGallery";
 import ReviewsSection from "@/components/reviews/ReviewsSection";
+import WhatsAppCTABanner from "@/components/cta/WhatsAppCTABanner";
 import EnquiryForm from "@/components/forms/EnquiryForm";
+import ServiceAreasSection from "@/components/areas/ServiceAreasSection";
 import ContactSection from "@/components/contact/ContactSection";
 import Footer from "@/components/layout/Footer";
 import FloatingContact from "@/components/layout/FloatingContact";
@@ -24,53 +28,65 @@ export default function Home() {
       <Navbar />
 
       <main className="flex-1">
-        {/* 2. Hero */}
+        {/* 2. Hero Section (Smart & Stylish Solutions) */}
         <HeroSection />
 
-        {/* 3. Brand Statement Transition */}
+        {/* 3. Complete Home Solutions (6 Product Cards) */}
+        <HomeServicesSection />
+
+        {/* 4. Trust / Why Choose Us Section */}
+        <TrustSection />
+
+        {/* 5. Brand Statement Transition */}
         <BrandStatement />
 
-        {/* 4. Why Invisible Grills (6 Features from PDF) */}
+        {/* 6. Why Invisible Grills (6 Features from PDF) */}
         <WhyInvisibleGrills />
 
-        {/* 5. Product Overview (Cable is Heart of Product) */}
+        {/* 7. Product Overview (Cable is Heart of Product) */}
         <ProductOverview />
 
-        {/* 6. Technical Specifications (SS 316/304, 2.5/3.0mm, 400kg tension) */}
+        {/* 8. Technical Specifications (SS 316/304, 2.5/3.0mm, 400kg tension) */}
         <TechnicalSpecifications />
 
-        {/* 7. Technical Engineering Diagrams (27mm Channel, Cable, 2.7mm Stiffener) */}
+        {/* 9. Technical Engineering Diagrams (27mm Channel, Cable, 2.7mm Stiffener) */}
         <TechnicalDiagrams />
 
-        {/* 8. Safety & Performance (Accidental fall prevention, Anti-rust) */}
+        {/* 10. Safety & Performance (Accidental fall prevention, Anti-rust) */}
         <SafetyPerformance />
 
-        {/* 9. Window Installation Types (Fixed, Sliding, Bi-Fold, Casement) */}
+        {/* 11. Window Installation Types (Fixed, Sliding, Bi-Fold, Casement) */}
         <WindowTypesSection />
 
-        {/* 10. Invisible vs Traditional Grills Matrix */}
+        {/* 12. Invisible vs Traditional Grills Matrix */}
         <ComparisonSection />
 
-        {/* 11. Visual Applications */}
+        {/* 13. Visual Applications */}
         <ApplicationsSection />
 
-        {/* 12. Explore - Video Showcase */}
+        {/* 14. Explore - Video Showcase */}
         <ExploreSection />
 
-        {/* 13. Visual Gallery with Lightbox */}
+        {/* 15. Visual Gallery with Lightbox */}
         <VisualGallery />
 
-        {/* 14. Customer Reviews & Feedback */}
+        {/* 16. Customer Reviews & Feedback */}
         <ReviewsSection />
 
-        {/* 15. Product Enquiry & Site Visit Form */}
+        {/* 17. WhatsApp & Call CTA Banner */}
+        <WhatsAppCTABanner />
+
+        {/* 18. Product Enquiry & Free Site Visit Form */}
         <EnquiryForm />
 
-        {/* 14. Contact Section */}
+        {/* 19. Service Areas Section (All Over Hyderabad) */}
+        <ServiceAreasSection />
+
+        {/* 20. Direct Contact Section */}
         <ContactSection />
       </main>
 
-      {/* 15. Footer */}
+      {/* 21. Footer */}
       <Footer />
 
       {/* Floating Action Buttons */}

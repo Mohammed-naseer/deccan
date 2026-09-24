@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { galleryItems } from "@/data/productData";
+import { galleryItems as defaultGalleryItems } from "@/data/productData";
+import { getGallery } from "@/services/api";
 import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,11 +12,20 @@ const categories = ["All", "Balconies", "Windows", "Installation", "Details"];
 export default function VisualGallery() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [galleryList, setGalleryList] = useState(defaultGalleryItems);
+
+  useEffect(() => {
+    getGallery().then((liveItems) => {
+      if (liveItems && liveItems.length > 0) {
+        setGalleryList(liveItems);
+      }
+    });
+  }, []);
 
   const filteredItems =
     selectedCategory === "All"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === selectedCategory);
+      ? galleryList
+      : galleryList.filter((item) => item.category === selectedCategory);
 
   // Keyboard navigation for lightbox
   useEffect(() => {

@@ -2,84 +2,329 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: #0B0F12;
-    --foreground: #F8FAFC;
-    --card: #12181F;
-    --card-foreground: #F8FAFC;
-    --cyan: #00C2CB;
-    --cyan-glow: rgba(0, 194, 203, 0.25);
-  }
+/* ============================================================
+   CSS CUSTOM PROPERTIES — DARK THEME (Default)
+   ============================================================ */
+:root,
+[data-theme="dark"] {
+  --background: #0B0F12;
+  --surface: #12181F;
+  --surface-alt: #18212C;
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.15);
+  --foreground: #F8FAFC;
+  --foreground-muted: #94A3B8;
+  --foreground-subtle: #64748B;
+  --cyan: #00C2CB;
+  --cyan-glow: rgba(0, 194, 203, 0.25);
+  --input-bg: #12181F;
+  --input-border: rgba(255, 255, 255, 0.10);
+  --input-text: #F8FAFC;
+  --input-placeholder: #475569;
+  --card-bg: rgba(18, 24, 31, 0.75);
+  --nav-bg: rgba(11, 15, 18, 0.90);
+  --footer-bg: rgba(0, 0, 0, 0.92);
+  --glass-bg: rgba(18, 24, 31, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --scrollbar-track: #0B0F12;
+  --scrollbar-thumb: #1E293B;
+  --select-bg: #12181F;
+}
 
+/* ============================================================
+   CSS CUSTOM PROPERTIES — LIGHT THEME
+   ============================================================ */
+/* ============================================================
+   CSS CUSTOM PROPERTIES — LIGHT THEME
+   ============================================================ */
+[data-theme="light"] {
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F5F9;
+  --border: rgba(15, 23, 42, 0.08);
+  --border-strong: rgba(15, 23, 42, 0.16);
+  --foreground: #0B132B;
+  --foreground-muted: #334155;
+  --foreground-subtle: #64748B;
+  --cyan: #008B94;
+  --cyan-glow: rgba(0, 139, 148, 0.20);
+  --input-bg: #FFFFFF;
+  --input-border: #CBD5E1;
+  --input-text: #0F172A;
+  --input-placeholder: #64748B;
+  --card-bg: #FFFFFF;
+  --nav-bg: rgba(255, 255, 255, 0.94);
+  --footer-bg: #0B111A;
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(15, 23, 42, 0.08);
+  --scrollbar-track: #E2E8F0;
+  --scrollbar-thumb: #94A3B8;
+  --select-bg: #FFFFFF;
+}
+
+/* ============================================================
+   THEME-AWARE BASE STYLES
+   ============================================================ */
+@layer base {
   html {
     scroll-behavior: smooth;
-    color-scheme: dark;
     overflow-x: hidden;
   }
 
   body {
-    background-color: #0B0F12;
-    color: #F8FAFC;
-    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-inter), system-ui, -apple-system, BlinkMacSystemFont,
+      "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
+    transition: background-color 0.25s ease, color 0.25s ease;
   }
 
   ::selection {
-    background: #00C2CB;
-    color: #0B0F12;
+    background: var(--cyan);
+    color: #FFFFFF;
   }
 }
 
-/* Custom wire pattern subtle backdrop */
+/* ============================================================
+   THEME TRANSITION — smooth for all themed elements
+   ============================================================ */
+*, *::before, *::after {
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-duration: 0.2s;
+  transition-timing-function: ease;
+}
+
+/* Exclude transitions that would break animations */
+.no-theme-transition,
+.no-theme-transition * {
+  transition: none !important;
+}
+
+/* ============================================================
+   TAILWIND OVERRIDES FOR THEME — bg-deccan-dark etc.
+   In light mode we map these to light equivalents via CSS vars
+   ============================================================ */
+[data-theme="light"] .bg-deccan-dark {
+  background-color: var(--background) !important;
+}
+[data-theme="light"] .bg-deccan-card {
+  background-color: var(--surface) !important;
+}
+[data-theme="light"] .bg-deccan-dark\/80,
+[data-theme="light"] .bg-deccan-dark\/85,
+[data-theme="light"] .bg-deccan-dark\/90,
+[data-theme="light"] .bg-deccan-dark\/95,
+[data-theme="light"] .bg-deccan-dark\/98 {
+  background-color: rgba(255, 255, 255, 0.96) !important;
+}
+[data-theme="light"] .bg-deccan-dark\/70,
+[data-theme="light"] .bg-deccan-dark\/60 {
+  background-color: #F1F5F9 !important;
+}
+[data-theme="light"] .bg-deccan-card\/70,
+[data-theme="light"] .bg-deccan-card\/60,
+[data-theme="light"] .bg-deccan-card\/50,
+[data-theme="light"] .bg-deccan-card\/40 {
+  background-color: #FFFFFF !important;
+}
+[data-theme="light"] .bg-black\/40,
+[data-theme="light"] .bg-black\/70 {
+  background-color: #F1F5F9 !important;
+}
+[data-theme="light"] .bg-white\/5,
+[data-theme="light"] .bg-white\/10 {
+  background-color: #F1F5F9 !important;
+}
+
+/* Text visibility in light mode */
+[data-theme="light"] .text-white {
+  color: #0B132B !important;
+}
+[data-theme="light"] .text-slate-100 {
+  color: #0F172A !important;
+}
+[data-theme="light"] .text-slate-200 {
+  color: #1E293B !important;
+}
+[data-theme="light"] .text-slate-300 {
+  color: #334155 !important;
+}
+[data-theme="light"] .text-slate-400 {
+  color: #475569 !important;
+}
+[data-theme="light"] .text-slate-500 {
+  color: #64748B !important;
+}
+
+/* Preserve Gradient Clip Text in Light Mode (do not override text-white on gradient text) */
+[data-theme="light"] .text-transparent {
+  color: transparent !important;
+}
+
+/* Clean Borders in light mode */
+[data-theme="light"] .border-white\/5,
+[data-theme="light"] .border-white\/10,
+[data-theme="light"] .border-white\/15,
+[data-theme="light"] .border-white\/20 {
+  border-color: rgba(15, 23, 42, 0.10) !important;
+}
+
+/* Light theme form inputs */
+[data-theme="light"] input,
+[data-theme="light"] textarea,
+[data-theme="light"] select {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border-color: var(--input-border) !important;
+}
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* Light theme footer stays dark with proper contrast */
+[data-theme="light"] footer,
+[data-theme="light"] footer.bg-black\/90 {
+  background-color: var(--footer-bg) !important;
+}
+[data-theme="light"] footer .text-white {
+  color: #F8FAFC !important;
+}
+[data-theme="light"] footer .text-slate-200 {
+  color: #E2E8F0 !important;
+}
+[data-theme="light"] footer .text-slate-300 {
+  color: #CBD5E1 !important;
+}
+[data-theme="light"] footer .text-slate-400 {
+  color: #94A3B8 !important;
+}
+[data-theme="light"] footer .text-slate-500 {
+  color: #64748B !important;
+}
+[data-theme="light"] footer .border-white\/10 {
+  border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Light theme navbar */
+[data-theme="light"] header.fixed {
+  background-color: var(--nav-bg) !important;
+}
+[data-theme="light"] header .text-white {
+  color: #0F172A !important;
+}
+[data-theme="light"] header .text-slate-300 {
+  color: #334155 !important;
+}
+[data-theme="light"] header .text-slate-200 {
+  color: #1E293B !important;
+}
+
+/* Light mode cyan color is slightly deeper for AAA contrast */
+[data-theme="light"] .text-deccan-cyan {
+  color: var(--cyan) !important;
+}
+[data-theme="light"] .border-deccan-cyan\/30,
+[data-theme="light"] .border-deccan-cyan\/40 {
+  border-color: rgba(0, 139, 148, 0.35) !important;
+}
+[data-theme="light"] .bg-deccan-cyan\/10 {
+  background-color: rgba(0, 139, 148, 0.10) !important;
+}
+
+/* Light theme modal backdrop & cards */
+[data-theme="light"] .modal-backdrop {
+  background: rgba(15, 23, 42, 0.65);
+}
+
+/* ============================================================
+   CUSTOM PATTERNS (theme-aware)
+   ============================================================ */
 .bg-wire-pattern {
   background-image: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.03) 1px,
+    var(--border) 1px,
     transparent 1px
   );
   background-size: 32px 100%;
 }
 
 .bg-grid-pattern {
-  background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
-/* Glassmorphism card */
+/* ============================================================
+   GLASSMORPHISM (theme-aware)
+   ============================================================ */
 .glass-panel {
-  background: rgba(18, 24, 31, 0.75);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-panel-cyan {
-  background: rgba(18, 24, 31, 0.85);
+  background: var(--glass-bg);
   backdrop-filter: blur(16px);
   border: 1px solid rgba(0, 194, 203, 0.25);
   box-shadow: 0 8px 32px -4px rgba(0, 194, 203, 0.1);
 }
 
-/* Technical hairline */
+/* ============================================================
+   TECHNICAL BORDER
+   ============================================================ */
 .tech-border {
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
-/* Custom subtle scrollbar */
+/* ============================================================
+   SCROLLBAR (theme-aware)
+   ============================================================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0B0F12;
+  background: var(--scrollbar-track);
 }
 ::-webkit-scrollbar-thumb {
-  background: #1E293B;
+  background: var(--scrollbar-thumb);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #00C2CB;
+  background: var(--cyan);
+}
+
+/* ============================================================
+   FOCUS STATES — Accessibility
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ============================================================
+   MODAL BACKDROP
+   ============================================================ */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 100;
+}
+
+/* ============================================================
+   FILE UPLOAD PREVIEW
+   ============================================================ */
+.image-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
 }

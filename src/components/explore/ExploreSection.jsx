@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { getPublicVideos } from "@/services/api";
 
-const videos = [
+const defaultVideos = [
   {
     id: 1,
     src: "/videos/install_video_1.mp4",
@@ -189,6 +190,24 @@ function VideoPlayer({ video, index }) {
 }
 
 export default function ExploreSection() {
+  const [videoList, setVideoList] = useState(defaultVideos);
+
+  useEffect(() => {
+    getPublicVideos().then((liveVideos) => {
+      if (liveVideos && liveVideos.length > 0) {
+        const formatted = liveVideos.map((v, i) => ({
+          id: v._id || i,
+          src: v.videoUrl,
+          title: v.title,
+          subtitle: v.subtitle || v.category || "Deccan Space Works",
+          description: v.description,
+          tag: v.tag || "INSTALLATION PROCESS"
+        }));
+        setVideoList(formatted);
+      }
+    });
+  }, []);
+
   return (
     <section id="explore" className="py-24 bg-deccan-dark relative overflow-hidden">
       {/* Ambient glow */}
@@ -237,7 +256,7 @@ export default function ExploreSection() {
 
         {/* Video Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {videos.map((video, index) => (
+          {videoList.map((video, index) => (
             <VideoPlayer key={video.id} video={video} index={index} />
           ))}
         </div>

@@ -1,5 +1,7 @@
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/layout/ThemeProvider";
+import { themeScript } from "@/lib/theme";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -57,9 +59,15 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="scroll-smooth dark">
-      <body className={`${inter.variable} ${outfit.variable} font-sans antialiased bg-deccan-dark text-deccan-paper min-h-screen selection:bg-deccan-cyan selection:text-deccan-dark`}>
-        {children}
+    <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Anti-flash theme script — runs before React hydration */}
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body
+        className={`${inter.variable} ${outfit.variable} font-sans antialiased min-h-screen selection:bg-deccan-cyan selection:text-deccan-dark`}
+      >
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
