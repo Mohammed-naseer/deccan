@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Dependencies
 node_modules/
 .npm
@@ -19,13 +20,35 @@ yarn-debug.log*
 yarn-error.log*
 
 # OS files
+=======
+# Secrets & environment files
+.env
+.env.local
+.env.*.local
+
+# Large video files
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Node modules (for any nested npm projects)
+node_modules/
+
+# OS
+>>>>>>> 176ea07 (Update project)
 .DS_Store
 Thumbs.db
 
 # IDE
+<<<<<<< HEAD
 .vscode/
 .idea/
 
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+=======
+.idea/
+.vscode/
+>>>>>>> 176ea07 (Update project)

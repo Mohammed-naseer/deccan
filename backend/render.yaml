@@ -1,0 +1,42 @@
+services:
+  # Deccan Space Works — Python FastAPI Backend on Render
+  - type: web
+    name: deccan-backend
+    runtime: python
+    region: singapore  # Closest to Hyderabad
+    plan: free         # Upgrade to starter for no spin-down
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: MONGODB_URI
+        sync: false  # Set manually in Render Dashboard
+      - key: MONGODB_DATABASE
+        value: deccan_space_works
+      - key: JWT_SECRET
+        generateValue: true  # Render auto-generates a strong secret
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: OWNER_EMAIL
+        value: Deccanspaceworks@gmail.com
+      - key: SENDER_EMAIL
+        value: notifications@deccanspaceworks.com
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_RECIPIENT_NUMBER
+        value: "919100720137"
+      - key: FRONTEND_URL
+        value: https://deccan-five.vercel.app,http://localhost:3000
