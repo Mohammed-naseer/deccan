@@ -5,7 +5,25 @@ import { technicalSpecs, windowInstallationTypes, galleryItems } from "@/data/pr
  * Connects directly to the Python FastAPI backend.
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || (typeof window !== "undefined" && window.location.hostname === "localhost" ? "http://localhost:8000" : "");
+export function getApiBaseUrl() {
+  const envUrl = process.env.NEXT_PUBLIC_API_URL || process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (envUrl && typeof envUrl === "string" && envUrl.trim()) {
+    return envUrl.trim().replace(/\/+$/, "");
+  }
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    if (host === "localhost" || host === "127.0.0.1") {
+      return "http://localhost:8000";
+    }
+  }
+  if (process.env.NODE_ENV === "development") {
+    return "http://localhost:8000";
+  }
+  // Production default fallback when deployed (e.g. Vercel)
+  return "https://deccan-3jik.onrender.com";
+}
+
+const API_BASE_URL = getApiBaseUrl();
 
 // Token Management for Admin Portal
 export function getAdminToken() {

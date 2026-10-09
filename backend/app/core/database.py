@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from app.core.config import settings
@@ -36,18 +37,29 @@ async def connect_to_mongo():
         except Exception:
             pass
 
-        client = AsyncIOMotorClient(
-            settings.MONGODB_URI.strip(),
-            **motor_kwargs
-        )
-        # Test connection ping
-        await client[settings.MONGODB_DATABASE].command("ping")
-        db_instance.client = client
-        db_instance.db = client[settings.MONGODB_DATABASE]
-        logger.info(f"Successfully connected to MongoDB database: {settings.MONGODB_DATABASE}")
-        
-        # Create Indexes for high performance & constraints
-        await create_indexes()
+        last_err = None
+        for attempt in range(1, 4):
+            try:
+                client = AsyncIOMotorClient(
+                    settings.MONGODB_URI.strip(),
+                    **motor_kwargs
+                )
+                # Test connection ping
+                await client[settings.MONGODB_DATABASE].command("ping")
+                db_instance.client = client
+                db_instance.db = client[settings.MONGODB_DATABASE]
+                logger.info(f"Successfully connected to MongoDB database: {settings.MONGODB_DATABASE}")
+                
+                # Create Indexes for high performance & constraints
+                await create_indexes()
+                return
+            except Exception as conn_err:
+                last_err = conn_err
+                if attempt < 3:
+                    logger.warning(f"MongoDB connection attempt {attempt} failed ({conn_err}). Retrying in 2 seconds...")
+                    await asyncio.sleep(2.0)
+                else:
+                    raise conn_err
     except Exception as e:
         db_instance.client = None
         db_instance.db = None

@@ -31,8 +31,9 @@ class Settings(BaseSettings):
     WHATSAPP_PHONE_NUMBER_ID: str = ""
     WHATSAPP_RECIPIENT_NUMBER: str = "919100720137"
     
-    # CORS
-    FRONTEND_URL: str = "https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccan-five.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
+    # CORS (supports either CORS_ORIGINS or FRONTEND_URL)
+    CORS_ORIGINS: str = ""
+    FRONTEND_URL: str = "https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccanspaceworks.vercel.app,https://deccan-five.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
@@ -42,14 +43,21 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins(self) -> List[str]:
-        if not self.FRONTEND_URL:
+        raw = self.CORS_ORIGINS or self.FRONTEND_URL
+        if not raw:
             return [
                 "https://deccanspaceworks.com",
                 "https://www.deccanspaceworks.com",
+                "https://deccanspaceworks.vercel.app",
                 "https://deccan-five.vercel.app",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "http://127.0.0.1:3000"
             ]
-        origins = [url.strip() for url in self.FRONTEND_URL.split(",") if url.strip()]
+        origins = []
+        for url in raw.split(","):
+            cleaned = url.strip().rstrip("/")
+            if cleaned and cleaned not in origins:
+                origins.append(cleaned)
         return origins
 
 settings = Settings()
