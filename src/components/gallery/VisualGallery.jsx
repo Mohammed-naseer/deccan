@@ -19,7 +19,14 @@ export default function VisualGallery() {
   useEffect(() => {
     getGallery().then((liveItems) => {
       if (liveItems && liveItems.length > 0) {
-        setGalleryList(liveItems);
+        const formatted = liveItems.map((item, idx) => ({
+          id: item._id || item.id || `gal-${idx}`,
+          image: item.imageUrl || item.image || "/images/hero_balcony.jpg",
+          title: item.title || "Invisible Grill Installation",
+          caption: item.description || item.caption || "",
+          category: item.category || "Balconies",
+        }));
+        setGalleryList(formatted);
       }
     });
   }, []);
@@ -165,8 +172,8 @@ export default function VisualGallery() {
             >
               <div className="relative aspect-[4/3] w-full">
                 <Image
-                  src={item.image}
-                  alt={item.title}
+                  src={item.image || item.imageUrl || "/images/hero_balcony.jpg"}
+                  alt={item.title || "Invisible grill installation in Hyderabad"}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   loading="lazy"
@@ -188,7 +195,7 @@ export default function VisualGallery() {
                     {item.title}
                   </h3>
                   <p className="text-xs text-slate-400 font-light line-clamp-1">
-                    {item.caption}
+                    {item.caption || item.description}
                   </p>
                 </div>
               </div>
@@ -249,8 +256,8 @@ export default function VisualGallery() {
             {/* Main Lightbox Content */}
             <div className="relative max-w-4xl w-full max-h-[75vh] aspect-[16/10] rounded-2xl overflow-hidden border border-white/20 bg-deccan-card">
               <Image
-                src={activeLightboxItem.image}
-                alt={activeLightboxItem.title}
+                src={activeLightboxItem.image || activeLightboxItem.imageUrl || "/images/hero_balcony.jpg"}
+                alt={activeLightboxItem.title || "Invisible grill installation in Hyderabad"}
                 fill
                 sizes="(max-width: 1024px) 95vw, 896px"
                 className="object-contain"
@@ -267,7 +274,7 @@ export default function VisualGallery() {
                 {activeLightboxItem.title}
               </h3>
               <p className="text-xs sm:text-sm text-slate-400 font-light">
-                {activeLightboxItem.caption}
+                {activeLightboxItem.caption || activeLightboxItem.description}
               </p>
             </div>
           </motion.div>

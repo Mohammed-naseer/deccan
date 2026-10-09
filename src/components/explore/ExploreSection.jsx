@@ -219,6 +219,7 @@ export default function ExploreSection() {
         const formatted = liveVideos.map((v, i) => ({
           id: v._id || i,
           src: v.videoUrl,
+          poster: v.thumbnailUrl || v.poster || (i === 0 ? "/images/hero_balcony.jpg" : "/images/highrise_view.jpg"),
           title: v.title,
           subtitle: v.subtitle || v.category || "Deccan Space Works",
           description: v.description,

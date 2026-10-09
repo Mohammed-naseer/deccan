@@ -35,6 +35,11 @@ export const metadata = {
   alternates: {
     canonical: "https://deccanspaceworks.com",
   },
+  icons: {
+    icon: "/images/logo.jpg",
+    shortcut: "/images/logo.jpg",
+    apple: "/images/logo.jpg",
+  },
   robots: {
     index: true,
     follow: true,

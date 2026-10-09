@@ -440,7 +440,17 @@ export async function getGallery(category = "All") {
       const res = await fetch(url);
       if (res.ok) {
         const json = await res.json();
-        return json.data;
+        if (Array.isArray(json.data)) {
+          return json.data.map((item, idx) => ({
+            id: item._id || item.id || `gal-${idx}`,
+            image: item.imageUrl || item.image || "/images/hero_balcony.jpg",
+            title: item.title || "Invisible Grill Installation",
+            caption: item.description || item.caption || "",
+            category: item.category || "Balconies",
+            displayOrder: item.displayOrder || idx + 1,
+            status: item.status || "active",
+          }));
+        }
       }
     } catch {}
   }

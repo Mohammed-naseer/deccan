@@ -78,7 +78,7 @@ export default function ApplicationsSection() {
               <div className="relative aspect-[16/10] w-full">
                 <Image
                   src={app.image}
-                  alt={app.title}
+                  alt={`${app.title} invisible grill installation in Hyderabad`}
                   fill
                   sizes="(max-width: 1024px) 100vw, 50vw"
                   loading="lazy"

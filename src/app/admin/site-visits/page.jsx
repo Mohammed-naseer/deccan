@@ -364,7 +364,7 @@ export default function AdminSiteVisitsPage() {
                               className="relative w-8 h-8 rounded-lg overflow-hidden border border-white/20 bg-black cursor-pointer hover:z-10 transition-transform"
                               onClick={() => openVisitModal(item)}
                             >
-                              <Image src={url} alt="Site" fill className="object-cover" />
+                              <Image src={url} alt={`Customer site photo ${idx + 1}`} fill className="object-cover" />
                             </div>
                           ))}
                           {item.imageUrls.length > 3 && (
@@ -528,7 +528,7 @@ export default function AdminSiteVisitsPage() {
                       rel="noopener noreferrer"
                       className="group relative h-28 rounded-2xl overflow-hidden border border-white/15 block"
                     >
-                      <Image src={url} alt="Site Photo" fill className="object-cover group-hover:scale-105 transition-transform" />
+                      <Image src={url} alt={`Customer site photo ${idx + 1}`} fill className="object-cover group-hover:scale-105 transition-transform" />
                       <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white text-xs font-mono gap-1">
                         <span>View Full</span>
                         <ExternalLink className="w-3.5 h-3.5" />

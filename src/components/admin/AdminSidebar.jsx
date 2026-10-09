@@ -63,7 +63,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
         <div className="p-5 border-b border-white/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="relative w-9 h-9 rounded-full overflow-hidden border border-white/20">
-              <Image src="/images/logo.jpg" alt="Logo" fill className="object-cover" />
+              <Image src="/images/logo.jpg" alt="Deccan Space Works Admin Logo" fill className="object-cover" />
             </div>
             <div>
               <span className="font-display font-bold text-white text-sm block">

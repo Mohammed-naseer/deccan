@@ -124,8 +124,8 @@ export default function AdminVideosPage() {
             className="bg-[#12181F] border border-white/10 rounded-3xl overflow-hidden flex flex-col group hover:border-[#00C2CB]/40 transition-colors"
           >
             <div className="relative aspect-video w-full bg-black">
-              {v.videoUrl?.endsWith(".mp4") ? (
-                <video src={v.videoUrl} controls preload="none" className="w-full h-full object-cover" />
+              {v.videoUrl && (v.videoUrl.endsWith(".mp4") || v.videoUrl.endsWith(".webm") || v.videoUrl.endsWith(".mov") || v.videoUrl.startsWith("/videos/") || v.videoUrl.includes("cloudinary")) ? (
+                <video src={v.videoUrl} poster={v.thumbnailUrl} controls preload="none" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-slate-500 font-mono text-xs">
                   <span>External video: {v.videoUrl}</span>

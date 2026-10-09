@@ -19,7 +19,7 @@ export default function Footer() {
               <div className="relative w-12 h-12 rounded-full overflow-hidden border border-white/20">
                 <Image
                   src="/images/logo.jpg"
-                  alt="Deccan Space Works"
+                  alt="Deccan Space Works Logo"
                   fill
                   sizes="48px"
                   className="object-cover"

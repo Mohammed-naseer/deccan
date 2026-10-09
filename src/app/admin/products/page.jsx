@@ -141,7 +141,7 @@ export default function AdminProductsPage() {
             className="bg-[#12181F] border border-white/10 rounded-3xl overflow-hidden flex flex-col group hover:border-[#00C2CB]/40 transition-colors"
           >
             <div className="relative h-44 w-full bg-slate-900">
-              <Image src={p.image || "/images/highrise_view.jpg"} alt={p.name} fill className="object-cover" />
+              <Image src={p.image || "/images/highrise_view.jpg"} alt={p.name || "Product image"} fill className="object-cover" />
               <div className="absolute top-3 right-3 flex items-center gap-2">
                 <span
                   className={`text-[10px] font-mono uppercase px-2.5 py-1 rounded-full border ${

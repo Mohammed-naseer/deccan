@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
         {/* Brand Header */}
         <div className="text-center space-y-3">
           <div className="relative w-16 h-16 mx-auto rounded-full overflow-hidden border-2 border-[#00C2CB]/40 shadow-xl shadow-[#00C2CB]/10">
-            <Image src="/images/logo.jpg" alt="Logo" fill className="object-cover" />
+            <Image src="/images/logo.jpg" alt="Deccan Space Works Logo" fill className="object-cover" />
           </div>
           <div>
             <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">

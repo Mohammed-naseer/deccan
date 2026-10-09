@@ -100,7 +100,7 @@ export default function HomeServicesSection() {
               name: item.name,
               description: item.shortDescription || item.description || "",
               icon: Icon,
-              image: item.image || "/images/highrise_view.jpg",
+              image: item.image || item.imageUrl || "/images/highrise_view.jpg",
               highlight: item.highlight || "Popular",
               href,
             };
@@ -150,8 +150,8 @@ export default function HomeServicesSection() {
                 {/* Product Card Image */}
                 <div className="relative aspect-[16/10] w-full bg-deccan-dark/80 overflow-hidden">
                   <Image
-                    src={product.image}
-                    alt={product.name}
+                    src={product.image || "/images/highrise_view.jpg"}
+                    alt={`${product.name} by Deccan Space Works`}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     loading="lazy"

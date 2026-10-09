@@ -171,7 +171,7 @@ export default function AdminGalleryPage() {
             className="group relative bg-[#12181F] border border-white/10 rounded-2xl overflow-hidden flex flex-col hover:border-[#00C2CB]/40 transition-colors"
           >
             <div className="relative h-44 w-full bg-black">
-              <Image src={item.imageUrl} alt={item.title} fill className="object-cover group-hover:scale-105 transition-transform" />
+              <Image src={item.imageUrl || item.image || "/images/hero_balcony.jpg"} alt={item.title || "Gallery photo"} fill className="object-cover group-hover:scale-105 transition-transform" />
               <div className="absolute top-2 right-2 flex items-center gap-1">
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-black/70 text-[#00C2CB] border border-[#00C2CB]/30">
                   {item.category}
