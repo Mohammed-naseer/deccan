@@ -1,0 +1,13 @@
+# Deccan Space Works - robots.txt
+# Prevent search engine indexing of admin and API areas
+
+User-agent: *
+Disallow: /admin/
+Disallow: /admin
+Disallow: /api/
+
+Allow: /
+Allow: /images/
+Allow: /videos/
+
+Sitemap: https://deccanspaceworks.com/sitemap.xml

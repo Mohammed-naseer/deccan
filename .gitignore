@@ -1,0 +1,57 @@
+# Dependencies
+node_modules/
+.npm
+
+# Next.js build output
+.next/
+out/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.env
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Python virtual environments & bytecode
+venv/
+.venv/
+env/
+.env.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+
+# Debug and runtime logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+logs/
+
+# TypeScript & build info
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test caches & temporary files
+.pytest_cache/
+.coverage
+htmlcov/
+*.tmp
