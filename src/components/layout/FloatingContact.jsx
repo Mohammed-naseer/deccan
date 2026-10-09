@@ -13,8 +13,9 @@ export default function FloatingContact() {
     let isMounted = true;
     getPublicContent()
       .then((res) => {
-        if (isMounted && res?.data) {
-          setContent(res.data);
+        const data = res?.data || res;
+        if (isMounted && data && typeof data === "object") {
+          setContent(data);
         }
       })
       .catch(() => {});

@@ -71,6 +71,7 @@
 | **Part A3** | Technical SEO, Accessibility & Presentation | **COMPLETE WITH DEFERRED / NOT-VERIFIED ITEMS** | Canonical domain, JSON-LD, heading hierarchy, ARIA, sitemap, 404 boundary |
 | **Part A4** | Images & Media Audit & Production Readiness | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | All media reachable, URL-first architecture verified, 0 broken images, upload security, 0 DB blobs |
 | **Part A5** | Admin Panel Deep Audit & Functional Correctness | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | All 14 admin modules audited, real metrics, IDOR protection, inactive admin checks, 0 test residuals |
+| **Part A6** | Admin → Public Synchronization Deep Audit | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | End-to-end round trip verified across 10 entities, stale cache prevented (`no-store`), PII redacted, 99/99 tests pass, 0 residuals |
 
 ---
 
@@ -87,16 +88,35 @@
    - **Destructive Actions Safeguards**: Delete operations across enquiries, site visits, reviews, products, gallery, videos, testimonials, and media require admin confirmation and emit activity audit trail entries.
 3. **Automated Regression & Quality Assurance**:
    - `backend/test_part_a5_admin_panel.py`: **100% PASS** (12 audit sections covering auth, IDOR, dashboard metrics, leads, site visits, reviews, products, gallery, videos, testimonials, service areas, content, activity logs, and zero residuals).
-   - All regression suites (`test_part_a4_images_media.py`, `test_part_a3_seo_accessibility.py`, `test_part_a2_business_content.py`, `test_part_a1_functional_audit.py`, `test_phase8_production.py`, `test_phase7_ui_ux.py`, `test_phase6_hardening.py`, `test_phase5_qa.py`, `test_phase4_business.py`, `test_phase3_reliability.py`, `test_phase2_security.py`, `test_atlas_e2e_runner.py`): **100% PASS**.
+
+---
+
+### 7. Part A6 Admin → Public Synchronization Deep Audit Summary
+1. **End-to-End Bidirectional Propagation Verified**:
+   - **Products**: Admin Create $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/products` & `/api/products/{slug}`) $\rightarrow$ UI (`HomeServicesSection.jsx`). Update, draft status exclusion (404), and delete verified.
+   - **Gallery**: Admin Create $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/gallery`) $\rightarrow$ UI (`VisualGallery.jsx`). Schema mapping (`imageUrl` $\rightarrow$ `image`, `description` $\rightarrow$ `caption`, `_id` $\rightarrow$ `id`) verified.
+   - **Videos**: Admin Create $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/videos`) $\rightarrow$ UI (`ExploreSection.jsx`). Poster (`thumbnailUrl`) & video URL propagation verified.
+   - **Testimonials**: Admin Create $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/testimonials`) $\rightarrow$ UI (`ReviewsSection.jsx`). Rating, highlight, and author mapping verified.
+   - **Customer Reviews**: Customer submission $\rightarrow$ MongoDB (pending) $\rightarrow$ Admin Review Triage $\rightarrow$ Admin Approve $\rightarrow$ Public API $\rightarrow$ UI. PII fields (`email`, `phone`, `adminNotes`) strictly redacted. Admin Rejection instantly purges review from public view.
+   - **Service Areas**: Admin Create $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/service-areas`) $\rightarrow$ UI (`ServiceAreasSection.jsx`). Standardized spelling (`Hitec City`) verified.
+   - **Website Content**: Admin Update $\rightarrow$ MongoDB $\rightarrow$ Public API (`/api/content`) $\rightarrow$ UI (`TrustSection.jsx`, `Navbar.jsx`, `FloatingContact.jsx`, `ReviewsSection.jsx`). Claim protection verified (8,000+ installations, 100% satisfaction, 5+ Years).
+   - **Contacts**: Customer Submission $\rightarrow$ MongoDB (`contacts`, status: "new") $\rightarrow$ Admin Triage.
+   - **Site Visits**: Customer Submission $\rightarrow$ MongoDB (`site_visits`, status: "new", trackingCode assigned) $\rightarrow$ Admin Scheduling.
+2. **Defects Discovered & Fixed**:
+   - **Public Content Response Unwrapping**: `TrustSection.jsx`, `Navbar.jsx`, `FloatingContact.jsx`, and `ReviewsSection.jsx` previously checked `res?.data.data` because `getPublicContent()` already unwrapped `json.data`. Fixed across all 4 components using `const data = res?.data || res;`.
+   - **Browser & Router Cache Hardening**: Added `{ cache: "no-store" }` to all public GET requests in `src/services/api.js` to ensure real-time reflection of admin modifications without stale-data lag.
+3. **Automated Verification & Regression**:
+   - `backend/test_part_a6_admin_public_sync.py`: **100% PASS (99/99 tests passed across all 16 required audit sections)**.
+   - Regression Suites (`test_part_a5_admin_panel.py`, `test_part_a4_images_media.py`, `test_part_a3_seo_accessibility.py`, `test_part_a2_business_content.py`, `test_part_a1_functional_audit.py`, `test_phase8_production.py`, `test_phase7_ui_ux.py`, `test_phase6_hardening.py`, `test_phase5_qa.py`, `test_phase4_business.py`, `test_phase3_reliability.py`, `test_phase2_security.py`): **100% PASS**.
    - `npm run lint`: **0 errors, 0 warnings**.
-   - `npm run build`: **PASS (21/21 static pages generated, including `/admin/activity-logs`)**.
-   - Playwright Browser QA: **PASS across Desktop (1280x800, 1440x900) and Mobile (375x812, 390x844, 414x896)** (0 console errors, 0 horizontal overflow, responsive layout verified).
+   - `npm run build`: **PASS (21/21 static pages generated)**.
+   - Multi-Viewport Browser QA: **PASS across Desktop (1280x800, 1440x900) and Mobile (375x812, 390x844, 414x896)** (0 console errors, 0 horizontal overflow, real synchronized data confirmed).
    - Database Hygiene: **0 test residuals across all MongoDB Atlas collections**.
 
 ---
 
-### 7. Final Release Decision
-- **Part A5 Status**: **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES**
-- **Next Phase**: **PART A6 — ADMIN → PUBLIC SYNCHRONIZATION DEEP AUDIT**
+### 8. Final Release Decision
+- **Part A6 Status**: **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES**
+- **Next Phase**: **PART A7 — BACKEND / API / DATABASE / PRODUCTION HARDENING**
 
 

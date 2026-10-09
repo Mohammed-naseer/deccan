@@ -103,8 +103,8 @@ export default function ReviewsSection() {
     // Load content for dynamic stats
     getPublicContent()
       .then((res) => {
-        if (isMounted && res?.data) {
-          const c = res.data;
+        const c = res?.data || res;
+        if (isMounted && c && typeof c === "object") {
           setStatsData([
             { value: c.installationCount || "8,000+", label: "Installations in Hyderabad" },
             { value: "5.0", label: "Average Rating" },

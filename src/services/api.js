@@ -169,7 +169,7 @@ export async function submitReview(reviewData) {
 export async function getPublicReviews() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reviews`);
+      const res = await fetch(`${API_BASE_URL}/api/reviews`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
@@ -373,7 +373,7 @@ export async function deleteContact(id) {
 export async function getPublicProducts() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/products`);
+      const res = await fetch(`${API_BASE_URL}/api/products`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
@@ -437,7 +437,7 @@ export async function getGallery(category = "All") {
   if (API_BASE_URL) {
     try {
       const url = category && category !== "All" ? `${API_BASE_URL}/api/gallery?category=${encodeURIComponent(category)}` : `${API_BASE_URL}/api/gallery`;
-      const res = await fetch(url);
+      const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         if (Array.isArray(json.data)) {
@@ -510,7 +510,7 @@ export async function deleteAdminGallery(id) {
 export async function getPublicVideos() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/videos`);
+      const res = await fetch(`${API_BASE_URL}/api/videos`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
@@ -573,7 +573,7 @@ export async function deleteAdminVideo(id) {
 export async function getPublicTestimonials() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/testimonials`);
+      const res = await fetch(`${API_BASE_URL}/api/testimonials`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
@@ -636,7 +636,7 @@ export async function deleteAdminTestimonial(id) {
 export async function getPublicServiceAreas() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/service-areas`);
+      const res = await fetch(`${API_BASE_URL}/api/service-areas`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
@@ -699,7 +699,7 @@ export async function deleteAdminServiceArea(id) {
 export async function getPublicContent() {
   if (API_BASE_URL) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/content`);
+      const res = await fetch(`${API_BASE_URL}/api/content`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
