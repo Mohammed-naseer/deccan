@@ -10,7 +10,7 @@ router = APIRouter(prefix="/api/admin/uploads", tags=["Uploads & Media Library"]
 
 import os
 
-ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/gif"}
+ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"}
 ALLOWED_IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 ALLOWED_VIDEO_TYPES = {"video/mp4", "video/webm", "video/quicktime"}
 ALLOWED_VIDEO_EXTS = {".mp4", ".webm", ".mov"}

@@ -12,6 +12,7 @@ from app.services.email_service import send_new_site_visit_email
 from app.services.whatsapp_service import notify_site_visit_whatsapp
 from app.services.activity_service import log_admin_activity
 
+import os
 import re
 from app.core.rate_limiter import rate_limit_public_submission
 
@@ -80,6 +81,7 @@ async def submit_site_visit(
 
     # Process and upload images with strict limits (max 5 photos)
     ALLOWED_IMAGE_TYPES = {"image/jpeg", "image/png", "image/webp", "image/jpg"}
+    ALLOWED_IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".webp"}
     valid_images = [img for img in images if img and img.filename]
     if len(valid_images) > 5:
         raise HTTPException(
@@ -92,6 +94,12 @@ async def submit_site_visit(
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail={"success": False, "message": f"Unsupported file type for '{img.filename}'. Only JPG, PNG, and WEBP allowed.", "errorCode": "INVALID_FILE_TYPE"}
+            )
+        ext = os.path.splitext(img.filename or "")[1].lower()
+        if ext not in ALLOWED_IMAGE_EXTS:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail={"success": False, "message": f"Unsupported file extension for '{img.filename}'. Only JPG, PNG, and WEBP allowed.", "errorCode": "INVALID_FILE_EXTENSION"}
             )
 
     image_urls = []
