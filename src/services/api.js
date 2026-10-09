@@ -23,7 +23,91 @@ export function getApiBaseUrl() {
   return "https://deccan-3jik.onrender.com";
 }
 
-const API_BASE_URL = getApiBaseUrl();
+// Backward-compatible dynamic object that resolves string URL per-access
+export const API_BASE_URL = {
+  toString: () => getApiBaseUrl(),
+  valueOf: () => getApiBaseUrl(),
+};
+
+/**
+ * Classifies API and network errors into clear, professional, actionable messages.
+ */
+export function classifyApiError(err, status = null) {
+  // 1. HTTP Status classification
+  if (status) {
+    if (status === 400 || status === 422) {
+      return {
+        type: "validation",
+        status,
+        message: err?.message || "Please check the entered information and try again.",
+      };
+    }
+    if (status === 401 || status === 403) {
+      return {
+        type: "auth",
+        status,
+        message: "Your session has expired or is unauthorized. Please log in again.",
+      };
+    }
+    if (status === 429) {
+      return {
+        type: "rate_limit",
+        status,
+        message: "Too many requests. Please wait a few moments before trying again.",
+      };
+    }
+    if (status >= 500) {
+      return {
+        type: "server",
+        status,
+        message: "Server is temporarily experiencing issues. Please contact us directly via phone or WhatsApp.",
+      };
+    }
+  }
+
+  // 2. Client exception / network failure classification
+  const msg = err?.message || String(err || "");
+  const isTypeError = err?.name === "TypeError" || msg.includes("Failed to fetch") || msg.includes("NetworkError");
+  const isTimeout = err?.name === "AbortError" || msg.toLowerCase().includes("timeout");
+
+  if (isTimeout) {
+    return {
+      type: "timeout",
+      status: 408,
+      message: "The request timed out. Please check your internet connection or contact us via WhatsApp.",
+    };
+  }
+
+  if (isTypeError) {
+    const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
+    if (isOffline) {
+      return {
+        type: "network_offline",
+        status: 0,
+        message: "No internet connection detected. Please check your network and try again.",
+      };
+    }
+    return {
+      type: "network_or_cors",
+      status: 0,
+      message: "Unable to reach the server (network or security connection error). Please call us directly or chat on WhatsApp.",
+    };
+  }
+
+  if (msg.includes("not configured") || msg.includes("unavailable")) {
+    return {
+      type: "configuration",
+      status: 0,
+      message: "Service configuration is currently unavailable. Please contact us directly via phone or WhatsApp.",
+    };
+  }
+
+  return {
+    type: "unknown",
+    status: status || 0,
+    message: msg || "An unexpected error occurred. Please contact us via phone or WhatsApp.",
+  };
+}
 
 // Token Management for Admin Portal
 export function getAdminToken() {
@@ -79,7 +163,8 @@ async function authFetch(path, options = {}) {
     headers["Content-Type"] = "application/json";
   }
 
-  const url = `${API_BASE_URL}${path}`;
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}${path}`;
 
   // 15-second bounded network timeout
   const controller = new AbortController();
@@ -103,6 +188,9 @@ async function authFetch(path, options = {}) {
     if (err.name === "AbortError") {
       throw new Error("Request timed out after 15 seconds. Please check your backend connection.");
     }
+    if (err.name === "TypeError" && err.message?.includes("fetch")) {
+      throw new Error("Unable to reach the backend server. Please verify the FastAPI service is running and CORS is configured.");
+    }
     throw err;
   } finally {
     clearTimeout(timeoutId);
@@ -114,7 +202,8 @@ async function authFetch(path, options = {}) {
 // ---------------------------------------------------------------------------
 
 export async function adminLogin(email, password) {
-  const url = `${API_BASE_URL}/api/admin/login`;
+  const baseUrl = getApiBaseUrl();
+  const url = `${baseUrl}/api/admin/login`;
   try {
     const res = await fetch(url, {
       method: "POST",
@@ -152,9 +241,6 @@ export async function getAdminProfile() {
 // ---------------------------------------------------------------------------
 
 export async function getAdminDashboard() {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service URL is not configured.");
-  }
   const res = await authFetch("/api/admin/dashboard");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -169,38 +255,50 @@ export async function getAdminDashboard() {
 // ---------------------------------------------------------------------------
 
 export async function submitReview(reviewData) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service is currently not configured. Please reach us directly via phone or WhatsApp.");
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new Error("Service configuration is currently unavailable. Please reach us directly via phone or WhatsApp.");
   }
-  const res = await fetch(`${API_BASE_URL}/api/reviews`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(reviewData),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `Server error: ${res.status}`);
+  try {
+    const res = await fetch(`${baseUrl}/api/reviews`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(reviewData),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const classified = classifyApiError(data, res.status);
+      throw new Error(data.message || classified.message);
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "TypeError" || err.name === "AbortError") {
+      const classified = classifyApiError(err);
+      throw new Error(classified.message);
+    }
+    throw err;
   }
-  return res.json();
 }
 
 export async function getPublicReviews() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/reviews`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/reviews`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch reviews, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminReviews(status = "All", search = "", page = 1) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service URL is not configured.");
-  }
   const query = new URLSearchParams({ page, limit: 20 });
   if (status && status !== "All") query.append("status", status);
   if (search) query.append("search", search);
@@ -213,7 +311,6 @@ export async function getAdminReviews(status = "All", search = "", page = 1) {
 }
 
 export async function approveReview(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/reviews/${id}/approve`, { method: "PATCH" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -223,7 +320,6 @@ export async function approveReview(id) {
 }
 
 export async function rejectReview(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/reviews/${id}/reject`, { method: "PATCH" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -233,7 +329,6 @@ export async function rejectReview(id) {
 }
 
 export async function deleteReview(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/reviews/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -247,30 +342,59 @@ export async function deleteReview(id) {
 // ---------------------------------------------------------------------------
 
 export async function submitSiteVisit(payload) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service is currently not configured. Please contact us directly via phone or WhatsApp.");
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new Error("Service configuration is currently unavailable. Please contact us directly via phone or WhatsApp.");
   }
-  const isFormData = payload instanceof FormData;
-  const res = await fetch(`${API_BASE_URL}/api/site-visits`, {
-    method: "POST",
-    headers: isFormData ? {} : { "Content-Type": "application/json" },
-    body: isFormData ? payload : JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `Server error: ${res.status}`);
+  let body = payload;
+  if (!(payload instanceof FormData)) {
+    // Automatically convert plain object to FormData for multipart endpoint
+    const fd = new FormData();
+    Object.entries(payload || {}).forEach(([key, val]) => {
+      if (val !== undefined && val !== null) {
+        if (key === "images" && Array.isArray(val)) {
+          val.forEach((file) => fd.append("images", file));
+        } else {
+          fd.append(key, val);
+        }
+      }
+    });
+    body = fd;
   }
-  return res.json();
+
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
+  try {
+    const res = await fetch(`${baseUrl}/api/site-visits`, {
+      method: "POST",
+      headers: {},
+      body: body,
+      signal: controller.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const classified = classifyApiError(data, res.status);
+      throw new Error(data.message || classified.message);
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError" || err.name === "TypeError") {
+      const classified = classifyApiError(err);
+      throw new Error(classified.message);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 export async function createEnquiry(enquiry) {
-  return submitSiteVisit(enquiry);
+  // Semantically separate: routes contact enquiry payload to submitContact
+  return submitContact(enquiry);
 }
 
 export async function getAdminSiteVisits(status = "All", search = "", page = 1) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service URL is not configured.");
-  }
   const query = new URLSearchParams({ page, limit: 20 });
   if (status && status !== "All") query.append("status", status);
   if (search) query.append("search", search);
@@ -283,7 +407,6 @@ export async function getAdminSiteVisits(status = "All", search = "", page = 1) 
 }
 
 export async function updateSiteVisitStatus(id, statusOrPayload, adminNotes = null) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const payload = typeof statusOrPayload === "object" && statusOrPayload !== null
     ? statusOrPayload
     : { status: statusOrPayload, adminNotes };
@@ -299,7 +422,6 @@ export async function updateSiteVisitStatus(id, statusOrPayload, adminNotes = nu
 }
 
 export async function deleteSiteVisit(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/site-visits/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -313,25 +435,46 @@ export async function deleteSiteVisit(id) {
 // ---------------------------------------------------------------------------
 
 export async function submitContact(contactData) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service is currently not configured. Please contact us directly via phone or WhatsApp.");
+  const baseUrl = getApiBaseUrl();
+  if (!baseUrl) {
+    throw new Error("Service configuration is currently unavailable. Please contact us directly via phone or WhatsApp.");
   }
-  const res = await fetch(`${API_BASE_URL}/api/contact`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(contactData),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.message || `Server error: ${res.status}`);
-  }
-  return res.json();
-}
+  const normalized = {
+    name: contactData.name || "",
+    phone: contactData.phone || contactData.phoneNumber || "",
+    email: contactData.email || "",
+    message: contactData.message || contactData.requirementDetails || "General enquiry",
+    service: contactData.service || contactData.propertyType || null,
+    city: contactData.city || contactData.cityArea || "Hyderabad",
+  };
 
-export async function getAdminContacts(status = "All", search = "", page = 1) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service URL is not configured.");
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const res = await fetch(`${baseUrl}/api/contact`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(normalized),
+      signal: controller.signal,
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      const classified = classifyApiError(data, res.status);
+      throw new Error(data.message || classified.message);
+    }
+    return data;
+  } catch (err) {
+    if (err.name === "AbortError" || err.name === "TypeError") {
+      const classified = classifyApiError(err);
+      throw new Error(classified.message);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeoutId);
   }
+}
+export async function getAdminContacts(status = "All", search = "", page = 1) {
   const query = new URLSearchParams({ page, limit: 20 });
   if (status && status !== "All") query.append("status", status);
   if (search) query.append("search", search);
@@ -344,7 +487,6 @@ export async function getAdminContacts(status = "All", search = "", page = 1) {
 }
 
 export async function updateContactStatus(id, statusOrPayload, adminNotes = null) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const payload = typeof statusOrPayload === "object" && statusOrPayload !== null
     ? statusOrPayload
     : { status: statusOrPayload, adminNotes };
@@ -360,9 +502,6 @@ export async function updateContactStatus(id, statusOrPayload, adminNotes = null
 }
 
 export async function convertContactToSiteVisit(contactId, payload = {}) {
-  if (!API_BASE_URL) {
-    throw new Error("Backend service URL is not configured.");
-  }
   const res = await authFetch(`/api/admin/contacts/${contactId}/convert-to-site-visit`, {
     method: "POST",
     body: JSON.stringify(payload),
@@ -375,7 +514,6 @@ export async function convertContactToSiteVisit(contactId, payload = {}) {
 }
 
 export async function deleteContact(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/contacts/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -389,20 +527,24 @@ export async function deleteContact(id) {
 // ---------------------------------------------------------------------------
 
 export async function getPublicProducts() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/products`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/products`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch products, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminProducts() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/products");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -412,7 +554,6 @@ export async function getAdminProducts() {
 }
 
 export async function createAdminProduct(productData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/products", {
     method: "POST",
     body: JSON.stringify(productData),
@@ -425,7 +566,6 @@ export async function createAdminProduct(productData) {
 }
 
 export async function updateAdminProduct(id, productData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/products/${id}`, {
     method: "PATCH",
     body: JSON.stringify(productData),
@@ -438,7 +578,6 @@ export async function updateAdminProduct(id, productData) {
 }
 
 export async function deleteAdminProduct(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/products/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -452,9 +591,10 @@ export async function deleteAdminProduct(id) {
 // ---------------------------------------------------------------------------
 
 export async function getGallery(category = "All") {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const url = category && category !== "All" ? `${API_BASE_URL}/api/gallery?category=${encodeURIComponent(category)}` : `${API_BASE_URL}/api/gallery`;
+      const url = category && category !== "All" ? `${baseUrl}/api/gallery?category=${encodeURIComponent(category)}` : `${baseUrl}/api/gallery`;
       const res = await fetch(url, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
@@ -470,13 +610,16 @@ export async function getGallery(category = "All") {
           }));
         }
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch gallery, using fallback:", err?.message);
+      }
+    }
   }
   return galleryItems;
 }
 
 export async function getAdminGallery() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/gallery");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -486,7 +629,6 @@ export async function getAdminGallery() {
 }
 
 export async function createAdminGallery(galleryData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/gallery", {
     method: "POST",
     body: JSON.stringify(galleryData),
@@ -499,7 +641,6 @@ export async function createAdminGallery(galleryData) {
 }
 
 export async function updateAdminGallery(id, galleryData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/gallery/${id}`, {
     method: "PATCH",
     body: JSON.stringify(galleryData),
@@ -512,7 +653,6 @@ export async function updateAdminGallery(id, galleryData) {
 }
 
 export async function deleteAdminGallery(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/gallery/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -526,20 +666,24 @@ export async function deleteAdminGallery(id) {
 // ---------------------------------------------------------------------------
 
 export async function getPublicVideos() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/videos`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/videos`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch videos, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminVideos() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/videos");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -549,7 +693,6 @@ export async function getAdminVideos() {
 }
 
 export async function createAdminVideo(videoData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/videos", {
     method: "POST",
     body: JSON.stringify(videoData),
@@ -562,7 +705,6 @@ export async function createAdminVideo(videoData) {
 }
 
 export async function updateAdminVideo(id, videoData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/videos/${id}`, {
     method: "PATCH",
     body: JSON.stringify(videoData),
@@ -575,7 +717,6 @@ export async function updateAdminVideo(id, videoData) {
 }
 
 export async function deleteAdminVideo(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/videos/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -589,20 +730,24 @@ export async function deleteAdminVideo(id) {
 // ---------------------------------------------------------------------------
 
 export async function getPublicTestimonials() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/testimonials`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/testimonials`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch testimonials, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminTestimonials() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/testimonials");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -612,7 +757,6 @@ export async function getAdminTestimonials() {
 }
 
 export async function createAdminTestimonial(data) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/testimonials", {
     method: "POST",
     body: JSON.stringify(data),
@@ -625,7 +769,6 @@ export async function createAdminTestimonial(data) {
 }
 
 export async function updateAdminTestimonial(id, data) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/testimonials/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -638,7 +781,6 @@ export async function updateAdminTestimonial(id, data) {
 }
 
 export async function deleteAdminTestimonial(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/testimonials/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -652,20 +794,24 @@ export async function deleteAdminTestimonial(id) {
 // ---------------------------------------------------------------------------
 
 export async function getPublicServiceAreas() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/service-areas`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/service-areas`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch service areas, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminServiceAreas() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/service-areas");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -675,7 +821,6 @@ export async function getAdminServiceAreas() {
 }
 
 export async function createAdminServiceArea(data) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/service-areas", {
     method: "POST",
     body: JSON.stringify(data),
@@ -688,7 +833,6 @@ export async function createAdminServiceArea(data) {
 }
 
 export async function updateAdminServiceArea(id, data) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/service-areas/${id}`, {
     method: "PATCH",
     body: JSON.stringify(data),
@@ -701,7 +845,6 @@ export async function updateAdminServiceArea(id, data) {
 }
 
 export async function deleteAdminServiceArea(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/service-areas/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -715,20 +858,24 @@ export async function deleteAdminServiceArea(id) {
 // ---------------------------------------------------------------------------
 
 export async function getPublicContent() {
-  if (API_BASE_URL) {
+  const baseUrl = getApiBaseUrl();
+  if (baseUrl) {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/content`, { cache: "no-store" });
+      const res = await fetch(`${baseUrl}/api/content`, { cache: "no-store" });
       if (res.ok) {
         const json = await res.json();
         return json.data;
       }
-    } catch {}
+    } catch (err) {
+      if (process.env.NODE_ENV !== "production") {
+        console.warn("[DSW API] Failed to fetch content, using fallback:", err?.message);
+      }
+    }
   }
   return null;
 }
 
 export async function getAdminContent() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/content");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -738,7 +885,6 @@ export async function getAdminContent() {
 }
 
 export async function updateAdminContent(contentData) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/content", {
     method: "PATCH",
     body: JSON.stringify(contentData),
@@ -755,7 +901,6 @@ export async function updateAdminContent(contentData) {
 // ---------------------------------------------------------------------------
 
 export async function uploadImageMedia(file) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const formData = new FormData();
   formData.append("file", file);
   const res = await authFetch("/api/admin/uploads/image", {
@@ -770,7 +915,6 @@ export async function uploadImageMedia(file) {
 }
 
 export async function uploadVideoMedia(file) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const formData = new FormData();
   formData.append("file", file);
   const res = await authFetch("/api/admin/uploads/video", {
@@ -785,7 +929,6 @@ export async function uploadVideoMedia(file) {
 }
 
 export async function getAdminMediaLibrary() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/uploads/media");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -795,7 +938,6 @@ export async function getAdminMediaLibrary() {
 }
 
 export async function deleteAdminMedia(id) {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch(`/api/admin/uploads/media/${id}`, { method: "DELETE" });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
@@ -805,7 +947,6 @@ export async function deleteAdminMedia(id) {
 }
 
 export async function getAdminActivityLogs() {
-  if (!API_BASE_URL) throw new Error("Backend service URL is not configured.");
   const res = await authFetch("/api/admin/dashboard/activity");
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));

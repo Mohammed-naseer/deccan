@@ -39,4 +39,4 @@ services:
       - key: WHATSAPP_RECIPIENT_NUMBER
         value: "919100720137"
       - key: FRONTEND_URL
-        value: https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccanspaceworks.vercel.app,https://deccan-five.vercel.app,http://localhost:3000
+        value: https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccanspaceworks.vercel.app,https://deccan-five.vercel.app,http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001

@@ -33,7 +33,7 @@ class Settings(BaseSettings):
     
     # CORS (supports either CORS_ORIGINS or FRONTEND_URL)
     CORS_ORIGINS: str = ""
-    FRONTEND_URL: str = "https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccanspaceworks.vercel.app,https://deccan-five.vercel.app,http://localhost:3000,http://127.0.0.1:3000"
+    FRONTEND_URL: str = "https://deccanspaceworks.com,https://www.deccanspaceworks.com,https://deccanspaceworks.vercel.app,https://deccan-five.vercel.app,http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001,http://localhost:3002,http://127.0.0.1:3002"
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), ".env"),
@@ -44,20 +44,51 @@ class Settings(BaseSettings):
     @property
     def cors_origins(self) -> List[str]:
         raw = self.CORS_ORIGINS or self.FRONTEND_URL
-        if not raw:
-            return [
-                "https://deccanspaceworks.com",
-                "https://www.deccanspaceworks.com",
-                "https://deccanspaceworks.vercel.app",
-                "https://deccan-five.vercel.app",
-                "http://localhost:3000",
-                "http://127.0.0.1:3000"
-            ]
+        default_origins = [
+            "https://deccanspaceworks.com",
+            "https://www.deccanspaceworks.com",
+            "https://deccanspaceworks.vercel.app",
+            "https://deccan-five.vercel.app",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3001",
+            "http://localhost:3002",
+            "http://127.0.0.1:3002"
+        ]
         origins = []
-        for url in raw.split(","):
-            cleaned = url.strip().rstrip("/")
-            if cleaned and cleaned not in origins:
-                origins.append(cleaned)
+        if raw:
+            for url in raw.split(","):
+                cleaned = url.strip().rstrip("/")
+                if cleaned and cleaned not in origins:
+                    origins.append(cleaned)
+        else:
+            origins = list(default_origins)
+
+        # Always guarantee canonical production domains are included
+        canonical_production = [
+            "https://deccanspaceworks.com",
+            "https://www.deccanspaceworks.com",
+            "https://deccanspaceworks.vercel.app",
+            "https://deccan-five.vercel.app",
+        ]
+        for prod_origin in canonical_production:
+            if prod_origin not in origins:
+                origins.append(prod_origin)
+
+        # In development/staging, always guarantee local development origins are present
+        if self.ENVIRONMENT != "production":
+            for local_origin in [
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "http://localhost:3001",
+                "http://127.0.0.1:3001",
+                "http://localhost:3002",
+                "http://127.0.0.1:3002",
+            ]:
+                if local_origin not in origins:
+                    origins.append(local_origin)
+
         return origins
 
 settings = Settings()
