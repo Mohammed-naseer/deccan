@@ -60,7 +60,7 @@ async def get_public_testimonials():
         doc["_id"] = str(doc["_id"])
         items.append(doc)
 
-    if len(items) == 0:
+    if len(items) == 0 and await db.testimonials.count_documents({}) == 0:
         for t in DEFAULT_TESTIMONIALS:
             t_copy = t.copy()
             t_copy["createdAt"] = datetime.now(timezone.utc)

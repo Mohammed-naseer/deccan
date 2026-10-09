@@ -212,7 +212,8 @@ export async function adminLogin(email, password) {
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
-      throw new Error(data.message || "Invalid credentials.");
+      const errMsg = data.message || (typeof data.detail === "object" ? data.detail?.message : data.detail) || "Invalid credentials.";
+      throw new Error(errMsg);
     }
     if (!data.data?.token) {
       throw new Error("Authentication response did not contain a valid session token.");

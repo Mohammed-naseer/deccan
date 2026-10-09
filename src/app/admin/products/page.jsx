@@ -182,6 +182,7 @@ export default function AdminProductsPage() {
 
                 <button
                   onClick={() => handleDelete(p._id)}
+                  aria-label="Delete product"
                   className="p-2 rounded-xl text-slate-500 hover:text-rose-400 hover:bg-rose-950/20"
                 >
                   <Trash2 className="w-4 h-4" />

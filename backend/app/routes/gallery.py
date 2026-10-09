@@ -100,7 +100,7 @@ async def get_public_gallery(category: Optional[str] = None):
         items.append(doc)
 
     # Seed defaults if empty
-    if len(items) == 0 and not category:
+    if len(items) == 0 and not category and await db.gallery.count_documents({}) == 0:
         for g in DEFAULT_GALLERY:
             g_copy = g.copy()
             g_copy["createdAt"] = datetime.now(timezone.utc)

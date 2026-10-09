@@ -50,7 +50,7 @@ async def get_public_videos():
         doc["_id"] = str(doc["_id"])
         items.append(doc)
 
-    if len(items) == 0:
+    if len(items) == 0 and await db.videos.count_documents({}) == 0:
         for v in DEFAULT_VIDEOS:
             v_copy = v.copy()
             v_copy["createdAt"] = datetime.now(timezone.utc)

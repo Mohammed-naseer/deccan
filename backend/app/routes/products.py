@@ -100,7 +100,7 @@ async def get_public_products():
         items.append(doc)
 
     # Seed defaults if collection is empty
-    if len(items) == 0:
+    if len(items) == 0 and await db.products.count_documents({}) == 0:
         for p in DEFAULT_PRODUCTS:
             p_copy = p.copy()
             p_copy["createdAt"] = datetime.now(timezone.utc)

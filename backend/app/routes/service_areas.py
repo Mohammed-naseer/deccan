@@ -30,7 +30,7 @@ async def get_public_service_areas():
         doc["_id"] = str(doc["_id"])
         items.append(doc)
 
-    if len(items) == 0:
+    if len(items) == 0 and await db.service_areas.count_documents({}) == 0:
         for idx, area in enumerate(DEFAULT_SERVICE_AREAS):
             doc = {
                 "name": area,
