@@ -70,35 +70,33 @@
 | **Part A2** | Business Content & Data Correctness | **COMPLETE WITH CLIENT CONFIRMATION ITEMS** | Real business content wired; placeholder free; stats preserved for client signoff |
 | **Part A3** | Technical SEO, Accessibility & Presentation | **COMPLETE WITH DEFERRED / NOT-VERIFIED ITEMS** | Canonical domain, JSON-LD, heading hierarchy, ARIA, sitemap, 404 boundary |
 | **Part A4** | Images & Media Audit & Production Readiness | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | All media reachable, URL-first architecture verified, 0 broken images, upload security, 0 DB blobs |
+| **Part A5** | Admin Panel Deep Audit & Functional Correctness | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | All 14 admin modules audited, real metrics, IDOR protection, inactive admin checks, 0 test residuals |
 
 ---
 
-### 6. Part A4 Images & Media Audit Summary
-1. **Media Architecture**:
-   - URL-first architecture verified across MongoDB Atlas (`products`, `gallery`, `videos`, `media`, `site_visits`, `website_content`).
-   - Zero raw binaries, zero base64 strings in database.
-   - Zero localhost, 127.0.0.1, or `file://` URLs in production database.
-   - Cloudinary integration verified with graceful local/mock fallback when external credentials absent.
-2. **Key Media Fixes Implemented**:
-   - Fixed `VisualGallery.jsx` data normalization so live API items (`imageUrl`, `description`, `_id`) cleanly map to `image`, `caption`, `id` with robust static fallbacks.
-   - Fixed `getGallery()` in `src/services/api.js` to normalize database records and avoid undefined property crashes.
-   - Fixed `ExploreSection.jsx` video mapping to pass `thumbnailUrl` from database into `video.poster`.
-   - Fixed `admin/videos/page.jsx` to render poster images and support `.mp4`, `.webm`, `.mov`, and Cloudinary URLs.
-   - Fixed `admin/gallery/page.jsx` with safe fallback image previews.
-   - Enhanced image accessibility alt text across components (`Navbar`, `Footer`, `ApplicationsSection`, `HomeServicesSection`, `AdminSidebar`, `admin/login`, `admin/site-visits`).
-   - Added `icons` (`icon`, `apple`, `shortcut`) to root Next.js metadata in `src/app/layout.jsx`.
-   - Enforced upload validation in `uploads.py`, `site_visits.py`, and `cloudinary_service.py` (rejecting SVG, executables, mismatched extensions, oversized files >10MB, and sanitizing path traversal).
-3. **Automated Regression**:
-   - `test_part_a4_images_media.py`: **100% PASS**
-   - All previous suites (Phase 1B - 8, Parts A1 - A3): **100% PASS**
-   - `npm run lint`: **0 errors**
-   - `npm run build`: **PASS (20/20 static pages generated)**
-   - Playwright Browser QA: **PASS across Desktop (1280x800, 1440x900) and Mobile (375x812, 390x844, 414x896)** (0 broken images, 0 console errors, 0 overflow)
-   - Database Hygiene: **0 test residues in MongoDB Atlas**
+### 6. Part A5 Admin Panel Deep Audit Summary
+1. **Admin Panel Architecture & Module Inventory**:
+   - Audited all 14 admin routes and modules: `/admin/login`, `/admin` (Dashboard), `/admin/dashboard`, `/admin/contacts`, `/admin/site-visits`, `/admin/reviews`, `/admin/testimonials`, `/admin/products`, `/admin/gallery`, `/admin/videos`, `/admin/service-areas`, `/admin/content`, `/admin/media`, `/admin/activity`, `/admin/activity-logs` (route alias added), and `/admin/settings`.
+   - Verified strict authorization model: exactly two roles (`admin` and `public customer`). No superfluous or fake internal roles.
+   - Enforced genuine MongoDB metrics: eliminated hardcoded fallback statistics (`or 6`, `or 8`, `or 2`) in `/api/admin/dashboard` so live counts always reflect real database state.
+2. **Key Admin Security & Workflow Validations**:
+   - **Authentication & Inactive Admin Defense**: Valid logins receive secure JWT tokens. Nonexistent emails and incorrect passwords return uniform HTTP 401 without credential enumeration. Deactivated accounts (`isActive: False`) are blocked at login and immediately denied on all protected routes via live database check in `get_current_admin`.
+   - **IDOR & Boundary Protection**: Tested 11 admin endpoints with fake and malformed ObjectIDs (`400 Bad Request` or `404 Not Found` returned safely without unhandled 500 errors). All admin GET, POST, PATCH, and DELETE operations strictly reject unauthenticated access.
+   - **Lead Conversion & Double-Action Defense**: Contact enquiries can be seamlessly converted to official site visit requests (`DSW-HYD-XXXX` tracking code issued and bidirectionally linked). Attempted duplicate conversions return existing linked tracking without creating duplicate database records.
+   - **Reviews Moderation & Privacy**: Customer reviews default to `pending` status. Approved reviews publish immediately to public landing page while PII (`email`, `phone`, `adminNotes`) is strictly redacted from public payloads.
+   - **Destructive Actions Safeguards**: Delete operations across enquiries, site visits, reviews, products, gallery, videos, testimonials, and media require admin confirmation and emit activity audit trail entries.
+3. **Automated Regression & Quality Assurance**:
+   - `backend/test_part_a5_admin_panel.py`: **100% PASS** (12 audit sections covering auth, IDOR, dashboard metrics, leads, site visits, reviews, products, gallery, videos, testimonials, service areas, content, activity logs, and zero residuals).
+   - All regression suites (`test_part_a4_images_media.py`, `test_part_a3_seo_accessibility.py`, `test_part_a2_business_content.py`, `test_part_a1_functional_audit.py`, `test_phase8_production.py`, `test_phase7_ui_ux.py`, `test_phase6_hardening.py`, `test_phase5_qa.py`, `test_phase4_business.py`, `test_phase3_reliability.py`, `test_phase2_security.py`, `test_atlas_e2e_runner.py`): **100% PASS**.
+   - `npm run lint`: **0 errors, 0 warnings**.
+   - `npm run build`: **PASS (21/21 static pages generated, including `/admin/activity-logs`)**.
+   - Playwright Browser QA: **PASS across Desktop (1280x800, 1440x900) and Mobile (375x812, 390x844, 414x896)** (0 console errors, 0 horizontal overflow, responsive layout verified).
+   - Database Hygiene: **0 test residuals across all MongoDB Atlas collections**.
 
 ---
 
 ### 7. Final Release Decision
-- **Part A4 Status**: **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES**
-- **Next Phase**: **PART A5 — ADMIN PANEL DEEP AUDIT**
+- **Part A5 Status**: **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES**
+- **Next Phase**: **PART A6 — ADMIN → PUBLIC SYNCHRONIZATION DEEP AUDIT**
+
 

@@ -30,9 +30,9 @@ async def get_admin_dashboard_metrics(current_admin: dict = Depends(get_current_
                     "scheduledSiteVisits": 0,
                     "totalContacts": 0,
                     "newContacts": 0,
-                    "totalProducts": 6,
-                    "totalGallery": 8,
-                    "totalVideos": 2
+                    "totalProducts": 0,
+                    "totalGallery": 0,
+                    "totalVideos": 0
                 },
                 "recentSiteVisits": [],
                 "recentContacts": [],
@@ -142,9 +142,9 @@ async def get_admin_dashboard_metrics(current_admin: dict = Depends(get_current_
                 "scheduledSiteVisits": scheduled_site_visits,
                 "totalContacts": total_contacts,
                 "newContacts": new_contacts,
-                "totalProducts": total_products or 6,
-                "totalGallery": total_gallery or 8,
-                "totalVideos": total_videos or 2,
+                "totalProducts": total_products,
+                "totalGallery": total_gallery,
+                "totalVideos": total_videos,
                 "newEnquiries": new_site_visits + new_contacts,
                 "followUpsDue": total_followups_due
             },
