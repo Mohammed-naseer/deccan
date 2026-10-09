@@ -20,15 +20,25 @@ async def connect_to_mongo():
 
         host_info = settings.MONGODB_URI.split("@")[-1].split("?")[0] if "@" in settings.MONGODB_URI else "local host"
         logger.info(f"Connecting to MongoDB at {host_info}...")
+
+        motor_kwargs = {
+            "serverSelectionTimeoutMS": 5000,
+            "connectTimeoutMS": 5000,
+            "socketTimeoutMS": 10000,
+            "maxPoolSize": 50,
+            "minPoolSize": 5,
+            "retryWrites": True,
+            "retryReads": True,
+        }
+        try:
+            import certifi
+            motor_kwargs["tlsCAFile"] = certifi.where()
+        except Exception:
+            pass
+
         client = AsyncIOMotorClient(
             settings.MONGODB_URI.strip(),
-            serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=5000,
-            socketTimeoutMS=10000,
-            maxPoolSize=50,
-            minPoolSize=5,
-            retryWrites=True,
-            retryReads=True
+            **motor_kwargs
         )
         # Test connection ping
         await client[settings.MONGODB_DATABASE].command("ping")
@@ -91,6 +101,10 @@ async def create_indexes():
         await db_instance.db.videos.create_index([("status", 1), ("displayOrder", 1)])
         # Testimonials index
         await db_instance.db.testimonials.create_index([("status", 1), ("displayOrder", 1)])
+        # Service areas index
+        await db_instance.db.service_areas.create_index([("isActive", 1), ("displayOrder", 1)])
+        # Site visits trackingCode index
+        await db_instance.db.site_visits.create_index("trackingCode", sparse=True)
         # Activity logs index
         await db_instance.db.activity_logs.create_index([("timestamp", -1)])
         logger.info("MongoDB database indexes confirmed.")
