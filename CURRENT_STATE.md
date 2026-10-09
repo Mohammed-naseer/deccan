@@ -74,26 +74,29 @@
 | **Part A6** | Admin → Public Synchronization Deep Audit | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | End-to-end round trip verified across 10 entities, stale cache prevented (`no-store`), PII redacted, 99/99 tests pass, 0 residuals |
 | **Part A7** | Backend / API / Database / Production Hardening | **COMPLETE WITH CLIENT / PRODUCTION DEPENDENCIES** | 20 hardening sections verified, certifi TLS root certs, HSTS injected, trackingCode & serviceAreas indexes, 118/118 tests pass, 0 residuals |
 | **Part A8** | Code Cleanup & Project Integrity | **COMPLETE** | Dead code audited (mockPortalData removed), 0 console.logs, 0 debug prints, 38/38 A8 tests pass, full regression (A1-A7, Phases 1B-8) PASS, 85/85 browser QA pass, 0 Atlas residuals |
+| **Part A9** | SEO, Accessibility & Performance Verification | **COMPLETE** | 36/36 A9 tests pass, single H1 & 18 H2s, Schema.org JSON-LD valid, Skip link & focus trap verified, 85/85 browser QA pass, 0 Atlas residuals |
 
 ---
 
-### 10. Part A8 Code Cleanup & Project Integrity Summary
-1. **Codebase Hygiene & Dead Code Removal**:
-   - Audited and deleted obsolete unreferenced mock data artifact: `src/data/mockPortalData.js`.
-   - Verified 0 active `console.log` statements in frontend source code (`src/`).
-   - Verified 0 debug `print()` statements in production backend code (`backend/app/`).
-   - Verified 0 unresolved Git merge conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`) across all source files.
-   - Verified 0 leaked Windows absolute paths (`C:\`, `C:/`) or backslash filepaths in production frontend code.
-   - Verified all 16 backend dependencies in `requirements.txt` are actively used and necessary.
-   - Verified frontend `package.json` dependencies and scripts are clean and intact.
-2. **API Contract & Architecture Integrity**:
-   - Preserved all A6 frontend ↔ backend contract transformations (`imageUrl -> image`, `videoUrl -> src`, etc.).
-   - Verified all 60 FastAPI endpoints across 11 routers are intentional and correctly secured.
-   - Preserved public vs admin separation: 14 admin routes strictly require JWT and active admin verification.
-   - Verified environment configuration consistency: local (`localhost:3000` / `localhost:8000`) and production (`vercel.app` / `onrender.com` / `deccanspaceworks.com`) separated properly without secret leaks.
-3. **Automated Verification & Full Regression**:
-   - `backend/test_part_a8_code_integrity.py`: **100% PASS (38/38 tests passed across all 20 required audit sections)**.
+### 11. Part A9 SEO, Accessibility & Performance Verification Summary
+1. **SEO Integrity & Technical Indexing**:
+   - Canonical Domain: Verified strictly points to `https://deccanspaceworks.com` with matching OpenGraph and Twitter metadata.
+   - Crawlability & Admin Isolation: `public/robots.txt` strictly disallows `/admin` and `/api/`, and links canonical sitemap `https://deccanspaceworks.com/sitemap.xml`. Admin root layout injects `<meta name="robots" content="noindex, nofollow" />`.
+   - Structured Data: Schema.org `HomeAndConstructionBusiness` JSON-LD validated with real business contact details and geo-coordinates without fabricated opening hours or prices.
+   - Heading Structure: Verified single `<h1>` on homepage (`HeroSection`), 18 semantic `<h2>` section headings, and logical `<h3>` card subheadings.
+2. **Accessibility & Usability Hardening**:
+   - Keyboard Navigation: Skip to main content link (`<a href="#main-content">`) verified as first Tab stop. Global `:focus-visible` ring active in CSS.
+   - Dialogs & Focus Traps: `WriteReviewModal` and `VisualGallery` lightbox trap Tab/Shift+Tab focus, lock body scroll, restore focus upon dismissal, and close on `Escape`.
+   - Form Accessibility: `EnquiryForm` and `ContactSection` inputs use explicit `<label htmlFor="...">`, `aria-required="true"`, `aria-describedby` linked to `role="alert"` error nodes.
+   - Motion Preferences: Global `@media (prefers-reduced-motion: reduce)` zeroes animations and transitions for sensitive users.
+3. **Performance & Media Optimization**:
+   - Images: 100% Next.js `<Image>` tags with responsive `sizes` attributes, `priority` on the LCP hero asset, and `loading="lazy"` on below-the-fold media.
+   - Videos: `preload="none"`, `playsInline`, custom poster images, and ARIA-accessible play/pause and scrubber controls (`role="slider"`).
+   - Bundle Budget: Route `/` first load JS is 186 kB (under 200 kB budget).
+4. **Automated Verification & Full Regression**:
+   - `backend/test_part_a9_seo_accessibility_performance.py`: **100% PASS (36/36 tests passed across all 20 required audit sections)**.
    - Full regression across all existing suites: **100% PASS**
+     * A8 Code Integrity: 38/38 PASS
      * A7 Backend Hardening: 118/118 PASS
      * A6 Admin-Public Sync: 99/99 PASS
      * A5 Admin Deep Audit: ALL PASS
@@ -110,20 +113,21 @@
      * Phase 2 Security: ALL PASS
      * Phase 1B Atlas E2E: ALL PASS
      * Local/Prod Environment Compatibility: 73/73 PASS
-4. **Build, Compilation & Lint Verification**:
+5. **Build, Compilation & Lint Verification**:
    - Python Compilation: `python -m compileall backend/app` **PASS (exit code 0)**.
    - ESLint: `npm run lint` **PASS (0 errors, 0 warnings)**.
    - Next.js Build: `npm run build` **PASS (21/21 static pages generated)**.
-5. **Multi-Viewport Browser QA**:
+6. **Multi-Viewport Browser QA**:
    - Playwright browser QA across 5 viewports (Desktop 1280x800, Desktop 1440x900, Mobile 375x812, Mobile 390x844, Mobile 414x896) across 17 routes: **85/85 PASSED (100%)** with 0 horizontal overflows and 0 console errors.
-6. **Database Hygiene**:
-   - Comprehensive live Atlas scan: **0 test residuals (`PARTA8_TEST_` through `PARTA1_TEST_`, `PHASE1B_TEST_` through `PHASE8_TEST_`) across all collections**. Zero production data modified or deleted.
+7. **Database Hygiene**:
+   - Live MongoDB Atlas scan: **0 test residuals (`PARTA9_TEST_` through `PARTA1_TEST_`, `PHASE1B_TEST_` through `PHASE8_TEST_`) across all collections**. Zero production records altered or deleted.
 
 ---
 
-### 11. Final Release Decision
-- **Part A8 Status**: **PART A8 COMPLETE**
-- **Next Phase**: **PART A9 — SEO / ACCESSIBILITY / PERFORMANCE VERIFICATION**
+### 12. Final Release Decision
+- **Part A9 Status**: **PART A9 COMPLETE**
+- **Next Phase**: **PART A10 — FULL REGRESSION & PRE-UI FREEZE**
+
 
 
 
