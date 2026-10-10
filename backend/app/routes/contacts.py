@@ -14,6 +14,7 @@ from app.services.activity_service import log_admin_activity
 router = APIRouter(tags=["Contact Enquiries"])
 
 @router.post("/api/contact", response_model=ResponseBase, dependencies=[Depends(rate_limit_public_submission)])
+@router.post("/api/contacts", response_model=ResponseBase, dependencies=[Depends(rate_limit_public_submission)])
 @router.post("/api/enquiries", response_model=ResponseBase, dependencies=[Depends(rate_limit_public_submission)])
 async def submit_public_contact(payload: ContactCreate):
     """Public contact/general enquiry submission with abuse rate limiting and idempotency."""
