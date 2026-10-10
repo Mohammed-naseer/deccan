@@ -210,9 +210,25 @@ export async function adminLogin(email, password) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: email.trim().toLowerCase(), password }),
     });
+
+    if (res.status === 503) {
+      throw new Error("Backend service is waking up from standby or temporarily unavailable (HTTP 503). Please wait 30 seconds and try again.");
+    }
+
     const data = await res.json().catch(() => ({}));
     if (!res.ok || !data.success) {
-      const errMsg = data.message || (typeof data.detail === "object" ? data.detail?.message : data.detail) || "Invalid credentials.";
+      if (res.status === 401) {
+        const msg = data.message || (typeof data.detail === "object" ? data.detail?.message : data.detail) || "Invalid email address or password.";
+        throw new Error(msg);
+      }
+      if (res.status >= 500) {
+        const msg = data.message || (typeof data.detail === "object" ? data.detail?.message : data.detail) || `Backend internal server error (${res.status}). Please check server logs.`;
+        throw new Error(msg);
+      }
+      const errMsg =
+        data.message ||
+        (typeof data.detail === "object" ? data.detail?.message : data.detail) ||
+        `Login request failed (${res.status}). Please try again.`;
       throw new Error(errMsg);
     }
     if (!data.data?.token) {

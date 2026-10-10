@@ -1,21 +1,30 @@
 from datetime import datetime, timezone, timedelta
 from typing import Optional, Any
-from passlib.context import CryptContext
+import bcrypt
 import jwt
 from fastapi import HTTPException, status, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 security = HTTPBearer(auto_error=False)
 
 def hash_password(password: str) -> str:
-    """Hash password using bcrypt."""
-    return pwd_context.hash(password)
+    """Hash password using native bcrypt."""
+    pwd_bytes = password.encode("utf-8")
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(pwd_bytes, salt).decode("utf-8")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify password against bcrypt hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    """Verify password against bcrypt hash safely using native bcrypt."""
+    try:
+        if not plain_password or not hashed_password:
+            return False
+        return bcrypt.checkpw(
+            plain_password.encode("utf-8"),
+            hashed_password.encode("utf-8")
+        )
+    except Exception:
+        return False
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     """Create JWT access token with expiry."""
